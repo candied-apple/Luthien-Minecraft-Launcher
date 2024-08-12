@@ -1,12 +1,12 @@
 {
-  "name": "Luthien Minecraft Launcher",
+  "name": "LuthienMC",
   "version": "0.0.1",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
   "build": {
-    "appId": "com.candiedapple.luthienminecraftlauncher",
+    "appId": "com.candiedapple.luthienminecraft",
     "publish": [
       {
         "provider": "github",
