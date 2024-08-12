@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "build": "electron-builder"
+    "start": "electron ."
   },
   "build": {
     "appId": "com.candiedapple.luthienminecraft",
