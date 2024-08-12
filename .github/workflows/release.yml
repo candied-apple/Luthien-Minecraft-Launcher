@@ -20,14 +20,11 @@ jobs:
         with:
           node-version: 10
 
+      - name: Install dependencies
+        run: npm install  # Install your project dependencies
+
       - name: Build Electron app
         run: npm run build  # Ensure you have a build script in your package.json
-
-      - name: Publish Release Artifacts
-        uses: samuelmeuli/action-electron-builder@v1
-        with:
-          github_token: ${{ secrets.github_token }}
-          publish: "onTag"  # This will publish the release artifacts
 
       - name: Upload build artifacts to draft
         if: startsWith(github.ref, 'refs/tags/v')
