@@ -1,7 +1,6 @@
-name: Build/Release
+name: Build/release
 
-on:
-  workflow_dispatch:  # Allows manual triggering of the workflow
+on: push
 
 jobs:
   release:
@@ -20,18 +19,13 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies
-        run: npm install  # Install your project dependencies
-
-      - name: Build Electron app
-        run: npm run build  # Ensure you have a build script in your package.json
-
-      - name: Upload build artifacts to draft
-        if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v1
+      - name: Build/release Electron app
+        uses: samuelmeuli/action-electron-builder@v1
         with:
-          tag_name: ${{ github.ref }}
-          files: |
-            dist/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          # GitHub token, automatically provided to the action
+          # (No need to define this secret in the repo settings)
+          github_token: ${{ secrets.github_token }}
+
+          # If the commit is tagged with a version (e.g. "v1.0.0"),
+          # release the app after building
+          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
