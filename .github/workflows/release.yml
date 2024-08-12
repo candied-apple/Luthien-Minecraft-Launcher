@@ -1,0 +1,31 @@
+name: Build/release
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  release:
+    if: github.event.release.draft == true
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+
+      - name: Install Node.js, NPM and Yarn
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10
+
+      - name: Build/release Electron app
+        uses: samuelmeuli/action-electron-builder@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          release: true # Automatically release after building
+          tag: ${{ github.event.release.tag_name }} # Use the draft tag for the release
+

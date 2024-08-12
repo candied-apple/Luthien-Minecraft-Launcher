@@ -1,0 +1,54 @@
+{
+  "name": "Luthien Minecraft Launcher",
+  "version": "0.0.1",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "build": {
+    "appId": "com.candiedapple.luthienminecraftlauncher",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "candied-apple",
+        "repo": "Luthien-Minecraft-Launcher"
+      }
+    ],
+    "mac": {
+      "category": "public.game",
+      "target": "dmg",
+      "icon": "build/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Game",
+      "icon": "build/icon.png"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "files": [
+      "build/**/*",
+      "index.html",
+      "main.js",
+      "renderer.js",
+      "styles.css"
+    ],
+    "directories": {
+      "buildResources": "build"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "electron-updater": "^6.2.1",
+    "minecraft-launcher-core": "^3.18.1"
+  },
+  "devDependencies": {
+    "electron": "^31.3.1",
+    "electron-builder": "^24.13.3"
+  }
+}

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luthien SMP Minecraft Launcher</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.4.2/css/all.css">
+</head>
+
+<body>
+    <nav style="-webkit-app-region: drag" class="title-bar">
+        <p id="title">Luthien SMP Minecraft Launcher</p>
+        <div class="nav-buttons">
+            <button id="minimize"><i class="fa-solid fa-minus"></i></button>
+            <button id="close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </nav>
+
+    <div id="tabs">
+        <button class="tab active" data-tab="launch">Oyna</button>
+        <button class="tab" data-tab="logs">Loglar</button>
+        <button class="tab" data-tab="settings">Ayarlar</button>
+        <button class="tab" data-tab="credits">Credits</button>
+        <button class="tab" data-tab="update-notes">Güncelleme Notları</button>
+    </div>
+
+    <div id="content">
+        <div id="launch" class="tab-content">
+            <h1>Oyna</h1>
+            <input type="text" id="username" placeholder="Kullanıcı Adı">
+            <button id="launch-button">Oyuna gir</button>
+            <div id="progress-container" style="display: none;">
+                <div id="progress-text"></div>
+                <div id="progress-bar"></div>
+            </div>
+        </div>
+        <div id="logs" class="tab-content" style="display: none;">
+            <h1>Loglar</h1>
+            <pre id="log-output"></pre>
+        </div>
+        <div id="settings" class="tab-content" style="display: none;">
+            <h1>Ayarlar</h1>
+            <label for="min-memory">Minimum Ram:</label>
+            <input type="range" id="min-memory" min="4" max="16" value="4" step="1">
+            <span id="min-memory-value">4G</span>
+            <br>
+            <label for="max-memory">Maximum Ram:</label>
+            <input type="range" id="max-memory" min="4" max="16" value="6" step="1">
+            <span id="max-memory-value">6G</span>
+        </div>
+        <div id="credits" class="tab-content" style="display: none;">
+            <h1>Credits</h1>
+            <p>Author: candiedapple</p>
+            <p>If you enjoy my work, consider supporting me ❤️:</p>
+            <a id="your-link" href="https://buymeacoffee.com/candiedapple" target="_blank" style="color: #ff006a;">Buy
+                me a coffee!</a>
+        </div>
+        <div id="update-notes" class="tab-content" style="display: none;">
+
+        </div>
+    </div>
+
+    <!-- Update Notification Section -->
+    <div id="update-notification" style="display: none; background-color: #eee; padding: 10px; text-align: center;">
+        <p style="color: black;">Yeni bir güncelleme var! <br> Güncelleme indikten sonra lütfen uygulamayı yeniden
+            başlatın.</p>
+        <button id="restart-button">Şimdi Yeniden başlat</button>
+    </div>
+
+    <!-- Update Progress Section -->
+    <div id="update-progress-container" style="display: none;">
+        <div id="update-progress-text"></div>
+        <div id="update-progress-bar" style="width: 0%; background-color: #d16186; height: 20px;"></div>
+    </div>
+
+    <script src="renderer.js"></script>
+
+</body>
+
+</html>

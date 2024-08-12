@@ -1,0 +1,263 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+
+* {
+    box-sizing: border-box;
+    font-family: "Inter";
+}
+
+body {
+    background: rgba(18, 18, 18, 0.932);
+    color: #ededed;
+    padding: 0;
+    margin: 20px;
+    overflow: auto;
+}
+
+nav {
+    border: 1px solid #2c2c2c;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    background: #1c1c1c;
+    border-radius: 5px;
+}
+
+#title {
+    user-select: none;
+    font-size: 15px;
+    margin-left: 10px;
+    -webkit-app-region: drag;
+}
+
+:not(nav) {
+    -webkit-app-region: no-drag;
+}
+
+.nav-buttons {
+    margin-left: auto;
+    height: 100%;
+    display: flex;
+}
+
+.nav-buttons>button {
+    transition: background .2s ease;
+    background: #1c1c1c;
+    border: none;
+    height: 100%;
+    margin: 0;
+    color: #ededed;
+    font-size: 17px;
+}
+
+.nav-buttons>button:hover {
+    transition: .2s ease;
+    background: #d16186;
+    cursor: pointer;
+}
+
+.nav-buttons>button:active {
+    background: #4c4c4c;
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+    color: #d16186;
+}
+
+#tabs {
+    margin-bottom: 20px;
+}
+
+.tab {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #303030;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.tab:hover {
+    background-color: #555;
+}
+
+.tab.active {
+    background-color: #d16186;
+}
+
+.tab-content {
+    display: none;
+}
+
+input[type="text"] {
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #303030;
+    color: #fff;
+    font-size: 1rem;
+}
+
+button {
+    padding: 10px 15px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #d16186;
+    color: #ffffff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #b1506a;
+}
+
+
+#progress-container {
+    display: none;
+    /* Hide initially */
+    width: 100%;
+    background-color: transparent;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+    top: 250px;
+}
+
+#progress-bar {
+    width: 1%;
+    height: 20px;
+    background-color: #d16186;
+    transition: width 0.5s;
+    border-radius: 10px;
+}
+
+#progress-text {
+    text-align: center;
+    margin-top: 10px;
+    color: #ffffff;
+}
+
+#log-output {
+    white-space: pre-wrap;
+    height: 350px;
+    background-color: #303030a1;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    overflow: auto;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+/* Additional styles for settings */
+#settings {
+    
+}
+
+input[type="range"] {
+    width: 300px;
+    margin: 10px 0;
+    -webkit-appearance: none;
+    /* Remove default styling */
+    background: #303030;
+    /* Track color */
+    height: 5px;
+    /* Track height */
+    border-radius: 5px;
+    /* Rounded track */
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    /* Remove default thumb styling */
+    appearance: none;
+    /* Remove default thumb styling */
+    width: 15px;
+    /* Thumb width */
+    height: 15px;
+    /* Thumb height */
+    background: #d16186;
+    /* Thumb color */
+    border-radius: 50%;
+    /* Round thumb */
+    cursor: pointer;
+    /* Pointer cursor */
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 15px;
+    /* Thumb width */
+    height: 15px;
+    /* Thumb height */
+    background: #d16186;
+    /* Thumb color */
+    border-radius: 50%;
+    /* Round thumb */
+    cursor: pointer;
+    /* Pointer cursor */
+}
+
+input[type="range"]::-ms-thumb {
+    width: 15px;
+    /* Thumb width */
+    height: 15px;
+    /* Thumb height */
+    background: #d16186;
+    /* Thumb color */
+    border-radius: 50%;
+    /* Round thumb */
+    cursor: pointer;
+    /* Pointer cursor */
+}
+
+/* Custom scrollbar styles for WebKit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+    width: 8px;
+    /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+    background: #303030;
+    /* Background of the scrollbar track */
+    border-radius: 5px;
+    /* Rounded corners for the track */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d16186;
+    /* Color of the scrollbar thumb */
+    border-radius: 5px;
+    /* Rounded corners for the thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #b1506a;
+    /* Color of the scrollbar thumb on hover */
+}
+
+/* Custom scrollbar styles for Firefox */
+scrollbar {
+    width: 8px;
+    /* Width of the scrollbar */
+}
+
+scrollbar-thumb {
+    background-color: #d16186;
+    /* Color of the scrollbar thumb */
+    border-radius: 5px;
+    /* Rounded corners for the thumb */
+}
+
+scrollbar-track {
+    background-color: #303030;
+    /* Background of the scrollbar track */
+    border-radius: 5px;
+    /* Rounded corners for the track */
+}
