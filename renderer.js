@@ -113,15 +113,21 @@ document.getElementById('your-link').addEventListener('click', (event) => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    const url = 'https://files.luthien.com.tr/update-notes.html'; // Replace with the URL of your text file
+    const fetchUpdateNotes = async () => {
+        const url = 'https://files.luthien.com.tr/update-notes.html'; // Replace with the URL of your text file
 
-    fetch(url)
-        .then(response => response.text())
-        .then(data => {
-            document.getElementById('update-notes').innerHTML = data;
-        })
-        .catch(error => {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.text();
+            document.getElementById('update-notes').innerHTML = data; // Update the inner HTML
+        } catch (error) {
             console.error('Error fetching the text file:', error);
-            document.getElementById('update-notes').innerText = 'İçerik yüklenemedi.';
-        });
+            document.getElementById('update-notes').innerText = 'İçerik yüklenemedi.'; // Display error message
+        }
+    };
+
+    fetchUpdateNotes(); // Call the function to fetch update notes
 });
