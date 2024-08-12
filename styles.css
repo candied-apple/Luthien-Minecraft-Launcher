@@ -51,7 +51,7 @@ nav {
 
 .nav-buttons>button:hover {
     transition: .2s ease;
-    background: #d16186;
+    background: #C8ACD6;
     cursor: pointer;
 }
 
@@ -62,7 +62,7 @@ nav {
 h1 {
     margin-bottom: 20px;
     font-size: 2.5rem;
-    color: #d16186;
+    color: #C8ACD6;
 }
 
 #tabs {
@@ -84,7 +84,7 @@ h1 {
 }
 
 .tab.active {
-    background-color: #d16186;
+    background-color: #C8ACD6;
 }
 
 .tab-content {
@@ -106,7 +106,7 @@ button {
     margin: 10px 0;
     border: none;
     border-radius: 5px;
-    background-color: #d16186;
+    background-color: #C8ACD6;
     color: #ffffff;
     font-size: 1rem;
     cursor: pointer;
@@ -132,7 +132,7 @@ button:hover {
 #progress-bar {
     width: 1%;
     height: 20px;
-    background-color: #d16186;
+    background-color: #C8ACD6;
     transition: width 0.5s;
     border-radius: 10px;
 }
@@ -183,7 +183,7 @@ input[type="range"]::-webkit-slider-thumb {
     /* Thumb width */
     height: 15px;
     /* Thumb height */
-    background: #d16186;
+    background: #C8ACD6;
     /* Thumb color */
     border-radius: 50%;
     /* Round thumb */
@@ -196,7 +196,7 @@ input[type="range"]::-moz-range-thumb {
     /* Thumb width */
     height: 15px;
     /* Thumb height */
-    background: #d16186;
+    background: #C8ACD6;
     /* Thumb color */
     border-radius: 50%;
     /* Round thumb */
@@ -209,7 +209,7 @@ input[type="range"]::-ms-thumb {
     /* Thumb width */
     height: 15px;
     /* Thumb height */
-    background: #d16186;
+    background: #C8ACD6;
     /* Thumb color */
     border-radius: 50%;
     /* Round thumb */
@@ -231,7 +231,7 @@ input[type="range"]::-ms-thumb {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #d16186;
+    background: #C8ACD6;
     /* Color of the scrollbar thumb */
     border-radius: 5px;
     /* Rounded corners for the thumb */
@@ -249,7 +249,7 @@ scrollbar {
 }
 
 scrollbar-thumb {
-    background-color: #d16186;
+    background-color: #C8ACD6;
     /* Color of the scrollbar thumb */
     border-radius: 5px;
     /* Rounded corners for the thumb */
