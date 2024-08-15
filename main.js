@@ -102,7 +102,9 @@ if (!gotTheLock) {
                 },
                 overrides: {
                     detached: false,
-                }
+                },
+                customArgs: "-Duser.language=en -Duser.country=US"
+                
             };
 
             launcher.launch(opts);
