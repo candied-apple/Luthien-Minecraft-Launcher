@@ -15,7 +15,7 @@ if (!gotTheLock) {
     // Get the user data directory
     const userDataPath = app.getPath('userData');
     const minecraftPath = path.join(userDataPath, 'luthienminecraft');
-
+    const authlibInjectorPath = path.join(minecraftPath, 'authlib-injector.jar');
     let mainWindow;
 
     function createWindow() {
@@ -83,13 +83,15 @@ if (!gotTheLock) {
     });
 
     // Handle launching Minecraft
-    ipcMain.on('launch-minecraft', async (event, username, memory) => {
+    ipcMain.on('launch-minecraft', async (event, username, password, memory) => {
         const updateResult = await updateFiles(event);
 
         if (updateResult) {
+            const customApiUrl = 'https://skins.luthien.com.tr/api/yggdrasil/authserver';
+            Authenticator.changeApiUrl(customApiUrl);
             const launcher = new Client();
             const opts = {
-                authorization: Authenticator.getAuth(username),
+                authorization: Authenticator.getAuth(username, password),
                 root: path.join(minecraftPath),
                 version: {
                     number: "1.20.1",
@@ -103,8 +105,12 @@ if (!gotTheLock) {
                 overrides: {
                     detached: false,
                 },
-                customArgs: "-Duser.language=en -Duser.country=US"
-                
+                customArgs: [
+                    `-javaagent:${authlibInjectorPath}=https://skins.luthien.com.tr/api/yggdrasil`,
+                    "-Duser.language=en",
+                    "-Duser.country=US"
+                ]
+
             };
 
             launcher.launch(opts);

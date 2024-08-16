@@ -10,6 +10,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    const savedPassword = localStorage.getItem('password');
+    if (savedPassword) {
+        document.getElementById('password').value = savedPassword;
+    }
+});
+
 const tabs = document.querySelectorAll('.tab');
 const tabContents = document.querySelectorAll('.tab-content');
 
@@ -30,10 +37,12 @@ document.getElementById('launch').style.display = 'block';
 
 document.getElementById('launch-button').addEventListener('click', () => {
     const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
     const minMemory = document.getElementById('min-memory').value + 'G';
     const maxMemory = document.getElementById('max-memory').value + 'G';
     localStorage.setItem('username', username);
-    ipcRenderer.send('launch-minecraft', username, { min: minMemory, max: maxMemory });
+    localStorage.setItem('password', password);
+    ipcRenderer.send('launch-minecraft', username, password, { min: minMemory, max: maxMemory });
     document.getElementById('progress-container').style.display = 'block';
 });
 
