@@ -29,14 +29,16 @@
     <div id="content">
         <div id="launch" class="tab-content">
             <h1>Oyna</h1>
-            <i class="fa-solid fa-envelope"></i>
-            <input type="text" id="username" placeholder="E-Posta">
-            <div>
-                <i class="fa-solid fa-key"></i>
-                <input type="password" id="password" placeholder="Şifre">
-                <span class="password-toggle-icon"><i class="fa-solid fa-eye" id="toggle-password"></i></span>
-            </div>
-            <button id="launch-button">Oyuna gir</button>
+            <form id="loginform">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" id="username" placeholder="E-Posta" required>
+                <div>
+                    <i class="fa-solid fa-key"></i>
+                    <input type="password" id="password" placeholder="Şifre" required>
+                    <span class="password-toggle-icon"><i class="fa-solid fa-eye" id="toggle-password"></i></span>
+                </div>
+                <button id="launch-button" type="submit">Oyuna gir</button>
+            </form>
             <div id="progress-container" style="display: none;">
                 <div id="progress-text"></div>
                 <div id="progress-bar"></div>

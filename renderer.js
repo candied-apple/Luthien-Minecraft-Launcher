@@ -35,16 +35,7 @@ tabs.forEach(tab => {
 
 document.getElementById('launch').style.display = 'block';
 
-document.getElementById('launch-button').addEventListener('click', () => {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const minMemory = document.getElementById('min-memory').value + 'G';
-    const maxMemory = document.getElementById('max-memory').value + 'G';
-    localStorage.setItem('username', username);
-    localStorage.setItem('password', password);
-    ipcRenderer.send('launch-minecraft', username, password, { min: minMemory, max: maxMemory });
-    document.getElementById('progress-container').style.display = 'block';
-});
+
 
 document.getElementById('min-memory').addEventListener('input', function () {
     document.getElementById('min-memory-value').textContent = this.value + 'G';
@@ -158,3 +149,29 @@ document.getElementById('toggle-password').addEventListener('click', function ()
         toggleIcon.classList.add('fa-eye');
     }
 });
+
+
+document.getElementById('launch-button').addEventListener('click', function(event) {
+    // Check if the form is valid
+    if (!document.getElementById('loginform').checkValidity()) {
+        // Prevent form submission
+        event.preventDefault();
+        // Trigger built-in validation message
+        document.getElementById('loginform').reportValidity();
+        return; // Exit the function if the form is invalid
+    }
+
+    // If the form is valid, proceed with the following actions
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const minMemory = document.getElementById('min-memory').value + 'G';
+    const maxMemory = document.getElementById('max-memory').value + 'G';
+
+    localStorage.setItem('username', username);
+    localStorage.setItem('password', password);
+
+    ipcRenderer.send('launch-minecraft', username, password, { min: minMemory, max: maxMemory });
+    document.getElementById('progress-container').style.display = 'block';
+});
+
+

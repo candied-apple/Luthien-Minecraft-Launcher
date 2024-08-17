@@ -110,6 +110,16 @@ input[type="text"] {
     font-size: 1rem;
 }
 
+input[type="email"] {
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    background-color: #303030;
+    color: #fff;
+    font-size: 1rem;
+}
+
 input[type="password"] {
     padding: 10px;
     margin: 10px 0;
