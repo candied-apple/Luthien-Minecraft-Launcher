@@ -140,3 +140,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fetchUpdateNotes(); // Call the function to fetch update notes
 });
+
+document.getElementById('toggle-password').addEventListener('click', function () {
+    var passwordInput = document.getElementById('password');
+    var toggleIcon = document.getElementById('toggle-password');
+    
+    // Toggle the type attribute
+    var type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    
+    // Toggle the icon class
+    if (type === 'text') {
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+});
