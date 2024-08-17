@@ -70,6 +70,10 @@ h1 {
     color: #C8ACD6;
 }
 
+h2 {
+    text-decoration: underline;
+}
+
 #tabs {
     margin-bottom: 20px;
 }
@@ -178,6 +182,19 @@ button:hover {
     overflow: auto;
     word-break: break-all;
     word-wrap: break-word;
+}
+
+#notes {
+    user-select: all;
+    height: 350px;
+    background-color: #303030a1;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    overflow: auto;
+
+
 }
 
 /* Additional styles for settings */

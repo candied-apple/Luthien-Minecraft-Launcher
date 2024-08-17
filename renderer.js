@@ -131,10 +131,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error('Network response was not ok');
             }
             const data = await response.text();
-            document.getElementById('update-notes').innerHTML = data; // Update the inner HTML
+            document.getElementById('notes').innerHTML = data; // Update the inner HTML
         } catch (error) {
             console.error('Error fetching the text file:', error);
-            document.getElementById('update-notes').innerText = 'İçerik yüklenemedi.'; // Display error message
+            document.getElementById('notes').innerText = 'İçerik yüklenemedi.'; // Display error message
         }
     };
 
