@@ -1,6 +1,9 @@
 name: Build/release
 
-on: push
+on:
+  push:
+    tags:
+      - 'v*' # This will only trigger the workflow for tags that start with "v"
 
 jobs:
   release:
