@@ -181,7 +181,7 @@ button:hover {
 }
 
 #log-output {
-    user-select: all;
+    user-select: text;
     white-space: pre-wrap;
     height: 350px;
     background-color: #303030a1;
@@ -195,7 +195,7 @@ button:hover {
 }
 
 #notes {
-    user-select: all;
+    user-select: text;
     height: 350px;
     background-color: #303030a1;
     color: #ffffff;
