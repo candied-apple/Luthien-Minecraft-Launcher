@@ -13,7 +13,7 @@ if (!gotTheLock) {
     app.quit();
 } else {
     // Get the user data directory
-    const userDataPath = app.getPath('userData');
+    const userDataPath = path.normalize(app.getPath('userData'));
     const minecraftPath = path.join(userDataPath, 'luthienminecraft');
     const authlibInjectorPath = path.join(minecraftPath, 'authlib-injector.jar');
     let mainWindow;
