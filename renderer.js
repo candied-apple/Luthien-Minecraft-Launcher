@@ -17,6 +17,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    const audio = document.getElementById('background-music');
+    const volumeSlider = document.getElementById('volume-slider');
+
+    // Retrieve the saved volume level from localStorage
+    const savedVolume = localStorage.getItem('volumeLevel');
+    if (savedVolume !== null) {
+        audio.volume = savedVolume;
+        volumeSlider.value = savedVolume;
+    }
+
+    // Update the volume level and save it to localStorage when the slider value changes
+    volumeSlider.addEventListener('input', (event) => {
+        const volume = event.target.value;
+        audio.volume = volume;
+        localStorage.setItem('volumeLevel', volume);
+    });
+});
+
 const tabs = document.querySelectorAll('.tab');
 const tabContents = document.querySelectorAll('.tab-content');
 
