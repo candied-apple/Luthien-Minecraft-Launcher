@@ -11,91 +11,93 @@
 
 <body>
 
-        <audio id="background-music" src="build/bgmusic.mp3" autoplay loop></audio>
+    <audio id="background-music" src="build/bgmusic.mp3" autoplay loop></audio>
 
-        <nav style="-webkit-app-region: drag" class="title-bar">
-            <p id="title">Luthien SMP Minecraft Launcher</p>
-            <div class="nav-buttons">
-                <div id="volume-control">
-                    <i class="fa-solid fa-volume-low"></i>
-                    <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
-                </div>
-                <button id="minimize"><i class="fa-solid fa-minus"></i></button>
-                <button id="close"><i class="fa-solid fa-xmark"></i></button>
+    <nav style="-webkit-app-region: drag" class="title-bar">
+        <p id="title">Luthien SMP Minecraft Launcher</p>
+        <div class="nav-buttons">
+            <div id="volume-control">
+                <i class="fa-solid fa-volume-low"></i>
+                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="0.5">
             </div>
-        </nav>
+            <button id="minimize"><i class="fa-solid fa-minus"></i></button>
+            <button id="close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </nav>
 
-        <div id="tabs">
-            <button class="tab active" data-tab="launch">Oyna</button>
-            <button class="tab" data-tab="logs">Loglar</button>
-            <button class="tab" data-tab="settings">Ayarlar</button>
-            <button class="tab" data-tab="credits">Credits</button>
-            <button class="tab" data-tab="update-notes">Güncelleme Notları</button>
+    <div id="tabs">
+        <button class="tab active" data-tab="launch">Oyna</button>
+        <button class="tab" data-tab="logs">Loglar</button>
+        <button class="tab" data-tab="settings">Ayarlar</button>
+        <button class="tab" data-tab="credits">Credits</button>
+        <button class="tab" data-tab="update-notes">Güncelleme Notları</button>
+    </div>
+
+    <div id="content">
+        <div id="launch" class="tab-content">
+            <h1>Oyna</h1>
+            <form id="loginform">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" id="username" placeholder="E-Posta" required>
+                <div>
+                    <i class="fa-solid fa-key"></i>
+                    <input type="password" id="password" placeholder="Şifre" required>
+                    <span class="password-toggle-icon"><i class="fa-solid fa-eye" id="toggle-password"></i></span>
+                </div>
+                <button id="launch-button" type="submit">Oyuna gir</button>
+            </form>
+            <div id="progress-container" style="display: none;">
+                <div id="progress-text"></div>
+                <div id="progress-bar"></div>
+            </div>
+        </div>
+        <div id="logs" class="tab-content" style="display: none;">
+            <h1>Loglar</h1>
+            <pre id="log-output"></pre>
+        </div>
+        <div id="settings" class="tab-content" style="display: none;">
+            <h1>Ayarlar</h1>
+            <label for="min-memory">Minimum Ram:</label>
+            <input type="range" id="min-memory" min="4" max="16" value="4" step="1">
+            <span id="min-memory-value">4G</span>
+            <br>
+            <label for="max-memory">Maximum Ram:</label>
+            <input type="range" id="max-memory" min="4" max="16" value="6" step="1">
+            <span id="max-memory-value">6G</span>
+        </div>
+        <div id="credits" class="tab-content" style="display: none;">
+            <h1>Credits</h1>
+            <p>Author: candiedapple</p>
+            <p>If you enjoy my work, consider supporting me ❤️</p>
+            <a id="your-link" href="https://buymeacoffee.com/candiedapple" target="_blank" style="color: #C8ACD6;">Buy
+                me a coffee!</a>
+            <br>
+            <a id="your-link" href="https://discord.gg/luthien" target="_blank"
+                style="color: #C8ACD6;">discord.gg/luthien</a>
+            <br>
+            <a id="your-link" href="https://alisaidkirdi.nugrift.com.tr" target="_blank"
+                style="color: #C8ACD6;">Background Creator</a>
+        </div>
+        <div id="update-notes" class="tab-content" style="display: none;">
+            <h1>Güncelleme Notları</h1>
+            <div id="notes"></div>
         </div>
 
-        <div id="content">
-            <div id="launch" class="tab-content">
-                <h1>Oyna</h1>
-                <form id="loginform">
-                    <i class="fa-solid fa-envelope"></i>
-                    <input type="email" id="username" placeholder="E-Posta" required>
-                    <div>
-                        <i class="fa-solid fa-key"></i>
-                        <input type="password" id="password" placeholder="Şifre" required>
-                        <span class="password-toggle-icon"><i class="fa-solid fa-eye" id="toggle-password"></i></span>
-                    </div>
-                    <button id="launch-button" type="submit">Oyuna gir</button>
-                </form>
-                <div id="progress-container" style="display: none;">
-                    <div id="progress-text"></div>
-                    <div id="progress-bar"></div>
-                </div>
-            </div>
-            <div id="logs" class="tab-content" style="display: none;">
-                <h1>Loglar</h1>
-                <pre id="log-output"></pre>
-            </div>
-            <div id="settings" class="tab-content" style="display: none;">
-                <h1>Ayarlar</h1>
-                <label for="min-memory">Minimum Ram:</label>
-                <input type="range" id="min-memory" min="4" max="16" value="4" step="1">
-                <span id="min-memory-value">4G</span>
-                <br>
-                <label for="max-memory">Maximum Ram:</label>
-                <input type="range" id="max-memory" min="4" max="16" value="6" step="1">
-                <span id="max-memory-value">6G</span>
-            </div>
-            <div id="credits" class="tab-content" style="display: none;">
-                <h1>Credits</h1>
-                <p>Author: candiedapple</p>
-                <p>If you enjoy my work, consider supporting me ❤️</p>
-                <a id="your-link" href="https://buymeacoffee.com/candiedapple" target="_blank"
-                    style="color: #C8ACD6;">Buy
-                    me a coffee!</a>
-                <a id="your-link" href="https://discord.gg/luthien" target="_blank"
-                    style="color: #C8ACD6;">discord.gg/luthien</a>
-            </div>
-            <div id="update-notes" class="tab-content" style="display: none;">
-                <h1>Güncelleme Notları</h1>
-                <div id="notes"></div>
-            </div>
+        <!-- Update Notification Section -->
+        <div id="update-notification" style="display: none; background-color: #eee; padding: 10px; text-align: center;">
+            <p style="color: black;">Yeni bir güncelleme var! <br> Güncelleme indikten sonra lütfen uygulamayı
+                yeniden
+                başlatın.</p>
+            <button id="restart-button">Şimdi Yeniden başlat</button>
+        </div>
 
-            <!-- Update Notification Section -->
-            <div id="update-notification"
-                style="display: none; background-color: #eee; padding: 10px; text-align: center;">
-                <p style="color: black;">Yeni bir güncelleme var! <br> Güncelleme indikten sonra lütfen uygulamayı
-                    yeniden
-                    başlatın.</p>
-                <button id="restart-button">Şimdi Yeniden başlat</button>
-            </div>
+        <!-- Update Progress Section -->
+        <div id="update-progress-container" style="display: none;">
+            <div id="update-progress-text"></div>
+            <div id="update-progress-bar" style="width: 0%; background-color: #C8ACD6; height: 20px;"></div>
+        </div>
 
-            <!-- Update Progress Section -->
-            <div id="update-progress-container" style="display: none;">
-                <div id="update-progress-text"></div>
-                <div id="update-progress-bar" style="width: 0%; background-color: #C8ACD6; height: 20px;"></div>
-            </div>
-
-            <script src="renderer.js"></script>
+        <script src="renderer.js"></script>
 
 </body>
 
