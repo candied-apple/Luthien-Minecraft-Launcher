@@ -6,12 +6,24 @@
 }
 
 body {
-    background: rgba(18, 18, 18, 0.932);
+    background-image: url('build/launcherbg.png');
     color: #ededed;
     padding: 0;
     margin: 20px;
     overflow: auto;
     user-select: none;
+    position: relative; /* Add this line */
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 800px;
+    height: 600px;
+    background-color: rgba(0, 0, 0, 0.5); /* Adjust the color and opacity here */
+    z-index: -1; /* Ensure the overlay is behind the content */
 }
 
 nav {
@@ -38,7 +50,7 @@ i {
     margin-left: 10px;
     width: 150px;
     -webkit-appearance: none;
-    background: #303030;
+    background: #303030b4;
     height: 5px;
     border-radius: 5px;
 }
@@ -123,7 +135,7 @@ h2 {
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
-    background-color: #303030;
+    background-color: #303030b4;
     color: #ffffff;
     cursor: pointer;
     transition: background-color 0.3s;
@@ -146,7 +158,7 @@ input[type="text"] {
     margin: 10px 0;
     border: none;
     border-radius: 5px;
-    background-color: #303030;
+    background-color: #303030b4;
     color: #fff;
     font-size: 1rem;
 }
@@ -156,7 +168,7 @@ input[type="email"] {
     margin: 10px 0;
     border: none;
     border-radius: 5px;
-    background-color: #303030;
+    background-color: #303030b4;
     color: #fff;
     font-size: 1rem;
 }
@@ -166,7 +178,7 @@ input[type="password"] {
     margin: 10px 0;
     border: none;
     border-radius: 5px;
-    background-color: #303030;
+    background-color: #303030b4;
     color: #fff;
     font-size: 1rem;
 }
@@ -258,7 +270,7 @@ input[type="range"] {
     margin: 10px 0;
     -webkit-appearance: none;
     /* Remove default styling */
-    background: #303030;
+    background: #303030b4;
     /* Track color */
     height: 5px;
     /* Track height */
@@ -316,7 +328,7 @@ input[type="range"]::-ms-thumb {
 }
 
 ::-webkit-scrollbar-track {
-    background: #303030;
+    background: #303030b4;
     /* Background of the scrollbar track */
     border-radius: 5px;
     /* Rounded corners for the track */
@@ -348,7 +360,7 @@ scrollbar-thumb {
 }
 
 scrollbar-track {
-    background-color: #303030;
+    background-color: #303030b4;
     /* Background of the scrollbar track */
     border-radius: 5px;
     /* Rounded corners for the track */
