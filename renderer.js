@@ -64,6 +64,34 @@ document.getElementById('max-memory').addEventListener('input', function () {
     document.getElementById('max-memory-value').textContent = this.value + 'G';
 });
 
+// Retrieve the stored path from localStorage
+document.addEventListener('DOMContentLoaded', () => {
+    const storedPath = localStorage.getItem('minecraftPath');
+    if (storedPath) {
+        document.getElementById('minecraft-path-value').textContent = storedPath;
+        ipcRenderer.send('set-minecraft-path', storedPath);
+    }
+});
+
+document.getElementById('select-minecraft-path').addEventListener('click', () => {
+    ipcRenderer.send('open-folder-dialog');
+});
+
+document.getElementById('reset-minecraft-path').addEventListener('click', () => {
+    ipcRenderer.send('reset-minecraft-path');
+});
+
+ipcRenderer.on('selected-folder', (event, folderPath) => {
+    document.getElementById('minecraft-path-value').textContent = folderPath;
+    localStorage.setItem('minecraftPath', folderPath); // Store the selected path in localStorage
+    ipcRenderer.send('set-minecraft-path', folderPath);
+});
+
+// Receive the default path from the main process
+ipcRenderer.on('default-minecraft-path', (event, defaultPath) => {
+    document.getElementById('minecraft-path-value').textContent = defaultPath;
+    localStorage.setItem('minecraftPath', defaultPath); // Store the default path in localStorage
+});
 // Handle progress for file downloads
 ipcRenderer.on('progress', (event, progress) => {
     const progressBar = document.getElementById('progress-bar');

@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const { Client, Authenticator } = require('minecraft-launcher-core');
 const fs = require('fs');
@@ -14,7 +14,7 @@ if (!gotTheLock) {
 } else {
     // Get the user data directory
     const userDataPath = path.normalize(app.getPath('userData'));
-    const minecraftPath = path.join(userDataPath, 'luthienminecraft');
+    let minecraftPath = path.join(userDataPath, 'luthienminecraft');
     const authlibInjectorPath = path.join(minecraftPath, 'authlib-injector.jar');
     let mainWindow;
 
@@ -29,12 +29,19 @@ if (!gotTheLock) {
             webPreferences: {
                 preload: path.join(__dirname, 'renderer.js'),
                 contextIsolation: false,
-                nodeIntegration: true
+                nodeIntegration: true,
+                enableRemoteModule: true
             }
         });
         mainWindow.loadFile('index.html');
         mainWindow.on('closed', function () {
             mainWindow = null;
+        });
+
+
+        // Send the default path to the renderer process
+        mainWindow.webContents.on('did-finish-load', () => {
+            mainWindow.webContents.send('default-minecraft-path', minecraftPath);
         });
     }
 
@@ -64,6 +71,18 @@ if (!gotTheLock) {
         }
     });
 
+    ipcMain.on('set-minecraft-path', (event, selectedPath) => {
+        minecraftPath = selectedPath;
+        console.log(`Minecraft path set to: ${minecraftPath}`);
+    });
+
+    ipcMain.on('reset-minecraft-path', (event) => {
+        minecraftPath = path.join(userDataPath, 'luthienminecraft');
+        event.sender.send('default-minecraft-path', minecraftPath);
+        console.log(`Minecraft path reset to default: ${minecraftPath}`);
+    });
+
+    
     // Handle auto-updates
     autoUpdater.on('update-available', () => {
         mainWindow.webContents.send('update_available');
@@ -134,11 +153,11 @@ if (!gotTheLock) {
         return new Promise((resolve, reject) => {
             const filesUrl = 'https://files.luthien.com.tr/files.json';
             const whitelistUrl = 'https://files.luthien.com.tr/whitelisted_files.json';
-    
+
             let filesToKeep = new Set();
             let directoriesToKeep = new Set();
             let prefixesToKeep = [];
-    
+
             // Fetch and parse whitelist
             https.get(whitelistUrl, (response) => {
                 let whitelistData = '';
@@ -150,11 +169,11 @@ if (!gotTheLock) {
                         const whitelist = JSON.parse(whitelistData);
                         whitelist.files.forEach(file => filesToKeep.add(file));
                         whitelist.directories.forEach(dir => directoriesToKeep.add(path.normalize(dir)));
-    
+
                         if (whitelist.prefixes) {
                             prefixesToKeep = whitelist.prefixes.map(prefix => prefix.toLowerCase());
                         }
-    
+
                         // Fetch and parse files list
                         https.get(filesUrl, (response) => {
                             let data = '';
@@ -166,20 +185,20 @@ if (!gotTheLock) {
                                     const files = JSON.parse(data);
                                     let totalFiles = files.length;
                                     let processedFiles = 0;
-    
+
                                     // Add files from files.json to the set of files to keep
                                     files.forEach(file => filesToKeep.add(path.normalize(file.filename)));
-    
+
                                     // Process files from files.json
                                     files.forEach(file => {
                                         const filename = file.filename;
                                         const expectedHash = file.hash;
                                         const fileUrl = `https://files.luthien.com.tr/files/${filename}`;
                                         const fullPath = path.join(minecraftPath, filename);
-    
+
                                         let fileExists = fs.existsSync(fullPath);
                                         let fileHash = '';
-    
+
                                         if (fileExists) {
                                             fileHash = crypto.createHash('sha256').update(fs.readFileSync(fullPath)).digest('hex');
                                             if (fileHash === expectedHash) {
@@ -193,7 +212,7 @@ if (!gotTheLock) {
                                         } else {
                                             console.log(`File ${filename} does not exist. Downloading...`);
                                         }
-    
+
                                         const directory = path.dirname(fullPath);
                                         try {
                                             if (!fs.existsSync(directory)) {
@@ -205,7 +224,7 @@ if (!gotTheLock) {
                                             checkProgress();
                                             return;
                                         }
-    
+
                                         downloadFile(fileUrl, fullPath).then(() => {
                                             const downloadedFileHash = crypto.createHash('sha256').update(fs.readFileSync(fullPath)).digest('hex');
                                             if (downloadedFileHash !== expectedHash) {
@@ -221,7 +240,7 @@ if (!gotTheLock) {
                                             checkProgress();
                                         });
                                     });
-    
+
                                     // Remove files not in files.json or not whitelisted
                                     function removeOldFiles() {
                                         function deleteDirectoryRecursively(dirPath) {
@@ -243,9 +262,9 @@ if (!gotTheLock) {
                                                         } else {
                                                             const relativeFilePath = path.relative(minecraftPath, fullPath);
                                                             const baseDir = relativeFilePath.split(path.sep)[0];
-    
+
                                                             const fileName = path.basename(relativeFilePath);
-    
+
                                                             // Check if the file is not in files.json, its base directory is not whitelisted, and it does not match any whitelisted prefix
                                                             if (
                                                                 !filesToKeep.has(relativeFilePath) &&
@@ -263,7 +282,7 @@ if (!gotTheLock) {
                                                         }
                                                     });
                                                 });
-    
+
                                                 // After processing files, check if directory should be deleted
                                                 fs.readdir(dirPath, (err, remainingFiles) => {
                                                     if (err) {
@@ -282,19 +301,19 @@ if (!gotTheLock) {
                                                 });
                                             });
                                         }
-    
+
                                         deleteDirectoryRecursively(minecraftPath);
-    
+
                                         resolve(true);
                                     }
-    
+
                                     function checkProgress() {
                                         mainWindow.webContents.send('progress', {
                                             total: totalFiles,
                                             task: processedFiles,
                                             type: 'Sunucu dosyaları'
                                         });
-    
+
                                         if (processedFiles === totalFiles) {
                                             removeOldFiles(); // Remove files not in the list
                                         }
@@ -315,7 +334,7 @@ if (!gotTheLock) {
             });
         });
     }
-    
+
     // Helper function to download a file
     function downloadFile(url, dest) {
         return new Promise((resolve, reject) => {
