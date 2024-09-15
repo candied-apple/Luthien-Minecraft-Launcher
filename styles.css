@@ -6,7 +6,7 @@
 }
 
 body {
-    background-image: url('build/launcherbg.png');
+    background-color: rgba(0, 0, 0, 0.5);
     color: #ededed;
     padding: 0;
     margin: 20px;
@@ -25,7 +25,16 @@ body::before {
     background-color: rgba(0, 0, 0, 0.5); /* Adjust the color and opacity here */
     z-index: -1; /* Ensure the overlay is behind the content */
 }
-
+#background-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1; /* Ensure the video is behind other content */
+    opacity: 0.8;
+}
 nav {
     border: 1px solid #2c2c2c;
     height: 35px;
@@ -33,6 +42,7 @@ nav {
     align-items: center;
     background: #1c1c1c;
     border-radius: 5px;
+    opacity: 0.8;
 }
 
 i {
