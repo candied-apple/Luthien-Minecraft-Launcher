@@ -96,7 +96,7 @@ if (!gotTheLock) {
                 version: {
                     number: "1.20.1",
                     type: "release",
-                    custom: "fabric-loader-0.16.5-1.20.1"
+                    custom: "1.20.1-forge-47.3.0"
                 },
                 memory: {
                     max: memory.max,
