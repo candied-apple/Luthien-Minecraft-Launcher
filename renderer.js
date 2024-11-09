@@ -133,7 +133,7 @@ document.getElementById('your-link').addEventListener('click', (event) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     const fetchUpdateNotes = async () => {
-        const url = 'https://files.luthien.com.tr/update-notes.html'; // Replace with the URL of your text file
+        const url = 'https://files.shukketsu.app/update-notes.html'; // Replace with the URL of your text file
 
         try {
             const response = await fetch(url);

@@ -87,7 +87,7 @@ if (!gotTheLock) {
         const updateResult = await updateFiles(event);
 
         if (updateResult) {
-            const customApiUrl = 'https://skins.luthien.com.tr/api/yggdrasil/authserver';
+            const customApiUrl = 'https://skins.shukketsu.app/api/yggdrasil/authserver';
             Authenticator.changeApiUrl(customApiUrl);
             const launcher = new Client();
             const opts = {
@@ -106,7 +106,7 @@ if (!gotTheLock) {
                     detached: false,
                 },
                 customArgs: [
-                    `-javaagent:${authlibInjectorPath}=https://skins.luthien.com.tr/api/yggdrasil`,
+                    `-javaagent:${authlibInjectorPath}=https://skins.shukketsu.app/api/yggdrasil`,
                     "-Duser.language=en",
                     "-Duser.country=US"
                 ]
@@ -132,8 +132,8 @@ if (!gotTheLock) {
     // Update the updateFiles function to accept event
     async function updateFiles(event) {
         return new Promise((resolve, reject) => {
-            const filesUrl = 'https://files.luthien.com.tr/files.json';
-            const whitelistUrl = 'https://files.luthien.com.tr/whitelisted_files.json';
+            const filesUrl = 'https://files.shukketsu.app/files.json';
+            const whitelistUrl = 'https://files.shukketsu.app/whitelisted_files.json';
     
             let filesToKeep = new Set();
             let directoriesToKeep = new Set();
@@ -169,7 +169,7 @@ if (!gotTheLock) {
                                     files.forEach(file => {
                                         const filename = file.filename;
                                         const expectedHash = file.hash;
-                                        const fileUrl = `https://files.luthien.com.tr/files/${filename}`;
+                                        const fileUrl = `https://files.shukketsu.app/files/${filename}`;
                                         const fullPath = path.join(minecraftPath, filename);
     
                                         let fileExists = fs.existsSync(fullPath);
