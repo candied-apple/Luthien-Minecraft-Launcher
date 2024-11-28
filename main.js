@@ -94,9 +94,9 @@ if (!gotTheLock) {
                 authorization: Authenticator.getAuth(username, password),
                 root: path.join(minecraftPath),
                 version: {
-                    number: "1.20.1",
+                    number: "1.21.3",
                     type: "release",
-                    custom: "fabric-loader-0.16.7-1.20.1"
+                    custom: "fabric-loader-0.16.9-1.21.3"
                 },
                 memory: {
                     max: memory.max,
