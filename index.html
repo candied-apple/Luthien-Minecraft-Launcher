@@ -27,11 +27,11 @@
     </nav>
 
     <div id="tabs">
-        <button class="tab active" data-tab="launch">Oyna</button>
-        <button class="tab" data-tab="logs">Loglar</button>
-        <button class="tab" data-tab="settings">Ayarlar</button>
+        <button class="tab active" data-tab="launch">Play</button>
+        <button class="tab" data-tab="logs">Logs</button>
+        <button class="tab" data-tab="settings">Settings</button>
         <button class="tab" data-tab="credits">Credits</button>
-        <button class="tab" data-tab="update-notes">Güncelleme Notları</button>
+        <button class="tab" data-tab="update-notes">Update Notes</button>
     </div>
 
     <div id="content">
@@ -39,13 +39,13 @@
             <h1>Oyna</h1>
             <form id="loginform">
                 <i class="fa-solid fa-envelope"></i>
-                <input type="email" id="username" placeholder="E-Posta" required>
+                <input type="email" id="username" placeholder="E-Mail" required>
                 <div>
                     <i class="fa-solid fa-key"></i>
-                    <input type="password" id="password" placeholder="Şifre" required>
+                    <input type="password" id="password" placeholder="Password" required>
                     <span class="password-toggle-icon"><i class="fa-solid fa-eye" id="toggle-password"></i></span>
                 </div>
-                <button id="launch-button" type="submit">Oyuna gir</button>
+                <button id="launch-button" type="submit">Launch</button>
             </form>
             <div id="progress-container" style="display: none;">
                 <div id="progress-text"></div>
@@ -53,11 +53,11 @@
             </div>
         </div>
         <div id="logs" class="tab-content" style="display: none;">
-            <h1>Loglar</h1>
+            <h1>Logs</h1>
             <pre id="log-output"></pre>
         </div>
         <div id="settings" class="tab-content" style="display: none;">
-            <h1>Ayarlar</h1>
+            <h1>Settings</h1>
             <label for="min-memory">Minimum Ram:</label>
             <input type="range" id="min-memory" min="4" max="16" value="4" step="1">
             <span id="min-memory-value">4G</span>
@@ -80,16 +80,14 @@
                 style="color: #C8ACD6;">discord.gg/shukketsu</a>
         </div>
         <div id="update-notes" class="tab-content" style="display: none;">
-            <h1>Güncelleme Notları</h1>
+            <h1>Update Notes</h1>
             <div id="notes"></div>
         </div>
 
         <!-- Update Notification Section -->
         <div id="update-notification" style="display: none; background-color: #eee; padding: 10px; text-align: center;">
-            <p style="color: black;">Yeni bir güncelleme var! <br> Güncelleme indikten sonra lütfen uygulamayı
-                yeniden
-                başlatın.</p>
-            <button id="restart-button">Şimdi Yeniden başlat</button>
+            <p style="color: black;">There is a new update! <br> Restart the app after update finished.</p>
+            <button id="restart-button">Restart Now</button>
         </div>
 
         <!-- Update Progress Section -->
