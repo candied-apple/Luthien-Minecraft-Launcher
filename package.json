@@ -1,6 +1,6 @@
 {
   "name": "luthien-mc",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
@@ -45,7 +45,8 @@
   "description": "",
   "dependencies": {
     "electron-updater": "^6.2.1",
-    "minecraft-launcher-core": "^3.18.1"
+    "minecraft-launcher-core": "^3.18.1",
+    "tomate-loaders": "^2.0.2"
   },
   "devDependencies": {
     "electron": "^31.3.1",

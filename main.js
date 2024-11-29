@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const { Client, Authenticator } = require('minecraft-launcher-core');
+const { fabric } = require('tomate-loaders');
 const fs = require('fs');
 const https = require('https');
 const crypto = require('crypto');
@@ -90,14 +91,13 @@ if (!gotTheLock) {
             const customApiUrl = 'https://skins.shukketsu.app/api/yggdrasil/authserver';
             Authenticator.changeApiUrl(customApiUrl);
             const launcher = new Client();
+            const launchConfig = await fabric.getMCLCLaunchConfig({
+                gameVersion: '1.21.1',
+                rootPath: path.join(minecraftPath),
+            });
             const opts = {
                 authorization: Authenticator.getAuth(username, password),
-                root: path.join(minecraftPath),
-                version: {
-                    number: "1.21.3",
-                    type: "release",
-                    custom: "fabric-loader-0.16.9-1.21.3"
-                },
+                ...launchConfig,
                 memory: {
                     max: memory.max,
                     min: memory.min
