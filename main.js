@@ -6,26 +6,8 @@ const fs = require('fs');
 const https = require('https');
 const crypto = require('crypto');
 const { autoUpdater } = require('electron-updater');
-const mysql = require('mysql');
-const bcrypt = require('bcryptjs');
+const axios = require('axios');
 require('dotenv').config();
-const { DB_HOST, DB_USER, DB_PASSWORD, DB_NAME } = process.env;
-
-// MySQL connection setup
-const connection = mysql.createConnection({
-    host: DB_HOST,
-    user: DB_USER,
-    password: DB_PASSWORD,
-    database: DB_NAME
-});
-
-connection.connect((err) => {
-    if (err) {
-        console.error('Error connecting to MySQL:', err);
-        return;
-    }
-    console.log('Connected to MySQL');
-});
 
 // Prevent multiple instances
 const gotTheLock = app.requestSingleInstanceLock();
@@ -129,91 +111,75 @@ if (!gotTheLock) {
         isGameRunning = true;
         mainWindow.webContents.send('update-launch-button', isGameRunning);
     
-        // Query the database for the user's password hash
-        connection.query('SELECT password FROM users WHERE email = ?', [username], async (err, results) => {
-            if (err) {
-                console.error('Error querying the database:', err);
-                event.reply('login-result', 'Error querying the database');
-                isGameRunning = false;
-                mainWindow.webContents.send('update-launch-button', isGameRunning);
-                return;
-            }
-    
-            if (results.length === 0) {
-                event.reply('login-result', 'User not found');
-                isGameRunning = false;
-                mainWindow.webContents.send('update-launch-button', isGameRunning);
-                return;
-            }
-    
-            const storedHash = results[0].password;
-    
-            // Verify the password
-            try {
-                const isMatch = bcrypt.compareSync(password, storedHash);
-                if (isMatch) {
-                    event.reply('login-result', 'Password is correct');
-                    // Proceed with launching Minecraft
-    
-                    const updateResult = await updateFiles(event);
-    
-                    if (updateResult) {
-                        const customApiUrl = 'https://skins.shukketsu.app/api/yggdrasil/authserver';
-                        Authenticator.changeApiUrl(customApiUrl);
-                        const launcher = new Client();
-                        const launchConfig = await fabric.getMCLCLaunchConfig({
-                            gameVersion: '1.21.1',
-                            rootPath: path.join(minecraftPath),
-                        });
-    
-                        const opts = {
-                            authorization: Authenticator.getAuth(username, password),
-                            ...launchConfig,
-                            memory: memory,
-                            overrides: {
-                                detached: false,
-                            },
-                            customArgs: [
-                                `-javaagent:${authlibInjectorPath}=https://skins.shukketsu.app/api/yggdrasil`,
-                                "-Duser.language=en",
-                                "-Duser.country=US"
-                            ]
-                        };
-    
-                        launcher.launch(opts);
-    
-                        launcher.on('debug', (e) => {
-                            console.log(e);
-                            mainWindow.webContents.send('log', e);
-                        });
-                        launcher.on('data', (e) => {
-                            console.log(e);
-                            mainWindow.webContents.send('log', e);
-                        });
-                        launcher.on('progress', (e) => {
-                            mainWindow.webContents.send('progress', e);
-                        });
-    
-                        launcher.on('close', () => {
-                            isGameRunning = false;
-                            mainWindow.webContents.send('update-launch-button', isGameRunning);
-                        });
-                    } else {
+        try {
+            const response = await axios.post('http://shukketsu.app:3000/check-password', {
+                email: username,
+                password: password
+            });
+
+            console.log('Response:', response.data);
+            if (response.data.success) {
+                event.reply('login-result', 'Password is correct');
+                // Proceed with launching Minecraft
+
+                const updateResult = await updateFiles(event);
+
+                if (updateResult) {
+                    const customApiUrl = 'https://skins.shukketsu.app/api/yggdrasil/authserver';
+                    Authenticator.changeApiUrl(customApiUrl);
+                    const launcher = new Client();
+                    const launchConfig = await fabric.getMCLCLaunchConfig({
+                        gameVersion: '1.21.1',
+                        rootPath: path.join(minecraftPath),
+                    });
+
+                    const opts = {
+                        authorization: Authenticator.getAuth(username, password),
+                        ...launchConfig,
+                        memory: memory,
+                        overrides: {
+                            detached: false,
+                        },
+                        customArgs: [
+                            `-javaagent:${authlibInjectorPath}=https://skins.shukketsu.app/api/yggdrasil`,
+                            "-Duser.language=en",
+                            "-Duser.country=US"
+                        ]
+                    };
+
+                    launcher.launch(opts);
+
+                    launcher.on('debug', (e) => {
+                        console.log(e);
+                        mainWindow.webContents.send('log', e);
+                    });
+                    launcher.on('data', (e) => {
+                        console.log(e);
+                        mainWindow.webContents.send('log', e);
+                    });
+                    launcher.on('progress', (e) => {
+                        mainWindow.webContents.send('progress', e);
+                    });
+
+                    launcher.on('close', () => {
                         isGameRunning = false;
                         mainWindow.webContents.send('update-launch-button', isGameRunning);
-                    }
+                    });
                 } else {
-                    event.reply('login-result', 'Password is incorrect');
                     isGameRunning = false;
                     mainWindow.webContents.send('update-launch-button', isGameRunning);
                 }
-            } catch (err) {
-                console.error('Error comparing passwords:', err);
-                event.reply('login-result', 'Error comparing passwords');
+            } else {
+                event.reply('login-result', 'Password is incorrect');
                 isGameRunning = false;
                 mainWindow.webContents.send('update-launch-button', isGameRunning);
             }
-        });
+        } catch (error) {
+            console.error('Error:', error.response ? error.response.data : error.message);
+            event.reply('login-result', 'Error verifying password');
+            isGameRunning = false;
+            mainWindow.webContents.send('update-launch-button', isGameRunning);
+        }
     });
 
     // Update the updateFiles function to accept event

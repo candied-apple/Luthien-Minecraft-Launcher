@@ -1,6 +1,6 @@
 {
     "name": "luthien-mc",
-    "version": "0.0.9",
+    "version": "1.0.0",
     "main": "main.js",
     "scripts": {
         "start": "electron ."
@@ -44,6 +44,7 @@
     "license": "ISC",
     "description": "",
     "dependencies": {
+        "axios": "^1.7.8",
         "bcrypt": "^5.1.1",
         "bcryptjs": "^2.4.3",
         "dotenv": "^16.4.5",
