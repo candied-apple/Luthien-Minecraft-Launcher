@@ -19,8 +19,6 @@ document.getElementById('launch-button').addEventListener('click', function(even
     const minMemory = document.getElementById('min-memory').value + 'G';
     const maxMemory = document.getElementById('max-memory').value + 'G';
 
-    // Show progress container
-    document.getElementById('progress-container').style.display = 'block';
     
     // Save credentials
     localStorage.setItem('username', username);
@@ -31,6 +29,18 @@ document.getElementById('launch-button').addEventListener('click', function(even
         min: minMemory,
         max: maxMemory
     });
+});
+
+ipcRenderer.on('login-result', (event, message) => {
+    if (message === 'Password is correct') {
+        
+    // Show progress container
+    document.getElementById('progress-container').style.display = 'block';
+        // Proceed with showing progress or launching the game
+    } else {
+        // Show error message to the user
+        document.getElementById('feedback-message').textContent = message;
+    }
 });
 
 // Window controls
@@ -212,12 +222,20 @@ document.addEventListener('DOMContentLoaded', () => {
     function toggleLaunchButton() {
         const isEmailEmpty = !emailInput.value;
         const isPasswordEmpty = !passwordInput.value;
-        launchButton.disabled = isEmailEmpty || isPasswordEmpty;
+        const shouldDisable = isEmailEmpty || isPasswordEmpty || launchButton.disabled;
+        launchButton.disabled = shouldDisable;
+        launchButton.classList.toggle('disabled', shouldDisable);
         feedbackMessage.textContent = isEmailEmpty || isPasswordEmpty ? 'Both email and password are required.' : '';
     }
 
     emailInput.addEventListener('input', toggleLaunchButton);
     passwordInput.addEventListener('input', toggleLaunchButton);
+
+    ipcRenderer.on('update-launch-button', (event, isGameRunning) => {
+        launchButton.disabled = isGameRunning;
+        launchButton.classList.toggle('disabled', isGameRunning);
+        launchButton.textContent = isGameRunning ? 'Game Running...' : 'Launch Minecraft';
+    });
 
     // Initial check
     toggleLaunchButton();

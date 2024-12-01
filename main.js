@@ -6,6 +6,25 @@ const fs = require('fs');
 const https = require('https');
 const crypto = require('crypto');
 const { autoUpdater } = require('electron-updater');
+const mysql = require('mysql');
+const bcrypt = require('bcryptjs');
+require('dotenv').config();
+
+// MySQL connection setup
+const connection = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
+});
+
+connection.connect((err) => {
+    if (err) {
+        console.error('Error connecting to MySQL:', err);
+        return;
+    }
+    console.log('Connected to MySQL');
+});
 
 // Prevent multiple instances
 const gotTheLock = app.requestSingleInstanceLock();
@@ -31,7 +50,6 @@ if (!gotTheLock) {
             webPreferences: {
                 nodeIntegration: true,
                 contextIsolation: false,
-
             }
         });
 
@@ -98,47 +116,103 @@ if (!gotTheLock) {
         app.quit();
     });
 
+    let isGameRunning = false;
+
     // Minecraft launch handler
     ipcMain.on('launch-minecraft', async (event, username, password, memory) => {
-        const updateResult = await updateFiles(event);
-
-        if (updateResult) {
-            const customApiUrl = 'https://skins.shukketsu.app/api/yggdrasil/authserver';
-            Authenticator.changeApiUrl(customApiUrl);
-            const launcher = new Client();
-            const launchConfig = await fabric.getMCLCLaunchConfig({
-                gameVersion: '1.21.1',
-                rootPath: path.join(minecraftPath),
-            });
-
-            const opts = {
-                authorization: Authenticator.getAuth(username, password),
-                ...launchConfig,
-                memory: memory,
-                overrides: {
-                    detached: false,
-                },
-                customArgs: [
-                    `-javaagent:${authlibInjectorPath}=https://skins.shukketsu.app/api/yggdrasil`,
-                    "-Duser.language=en",
-                    "-Duser.country=US"
-                ]
-            };
-
-            launcher.launch(opts);
-
-            launcher.on('debug', (e) => {
-                console.log(e);
-                mainWindow.webContents.send('log', e);
-            });
-            launcher.on('data', (e) => {
-                console.log(e);
-                mainWindow.webContents.send('log', e);
-            });
-            launcher.on('progress', (e) => {
-                mainWindow.webContents.send('progress', e);
-            });
+        if (isGameRunning) {
+            event.reply('launch-result', 'Game is already running');
+            return;
         }
+    
+        isGameRunning = true;
+        mainWindow.webContents.send('update-launch-button', isGameRunning);
+    
+        // Query the database for the user's password hash
+        connection.query('SELECT password FROM users WHERE email = ?', [username], async (err, results) => {
+            if (err) {
+                console.error('Error querying the database:', err);
+                event.reply('login-result', 'Error querying the database');
+                isGameRunning = false;
+                mainWindow.webContents.send('update-launch-button', isGameRunning);
+                return;
+            }
+    
+            if (results.length === 0) {
+                event.reply('login-result', 'User not found');
+                isGameRunning = false;
+                mainWindow.webContents.send('update-launch-button', isGameRunning);
+                return;
+            }
+    
+            const storedHash = results[0].password;
+    
+            // Verify the password
+            try {
+                const isMatch = bcrypt.compareSync(password, storedHash);
+                if (isMatch) {
+                    event.reply('login-result', 'Password is correct');
+                    // Proceed with launching Minecraft
+    
+                    const updateResult = await updateFiles(event);
+    
+                    if (updateResult) {
+                        const customApiUrl = 'https://skins.shukketsu.app/api/yggdrasil/authserver';
+                        Authenticator.changeApiUrl(customApiUrl);
+                        const launcher = new Client();
+                        const launchConfig = await fabric.getMCLCLaunchConfig({
+                            gameVersion: '1.21.1',
+                            rootPath: path.join(minecraftPath),
+                        });
+    
+                        const opts = {
+                            authorization: Authenticator.getAuth(username, password),
+                            ...launchConfig,
+                            memory: memory,
+                            overrides: {
+                                detached: false,
+                            },
+                            customArgs: [
+                                `-javaagent:${authlibInjectorPath}=https://skins.shukketsu.app/api/yggdrasil`,
+                                "-Duser.language=en",
+                                "-Duser.country=US"
+                            ]
+                        };
+    
+                        launcher.launch(opts);
+    
+                        launcher.on('debug', (e) => {
+                            console.log(e);
+                            mainWindow.webContents.send('log', e);
+                        });
+                        launcher.on('data', (e) => {
+                            console.log(e);
+                            mainWindow.webContents.send('log', e);
+                        });
+                        launcher.on('progress', (e) => {
+                            mainWindow.webContents.send('progress', e);
+                        });
+    
+                        launcher.on('close', () => {
+                            isGameRunning = false;
+                            mainWindow.webContents.send('update-launch-button', isGameRunning);
+                        });
+                    } else {
+                        isGameRunning = false;
+                        mainWindow.webContents.send('update-launch-button', isGameRunning);
+                    }
+                } else {
+                    event.reply('login-result', 'Password is incorrect');
+                    isGameRunning = false;
+                    mainWindow.webContents.send('update-launch-button', isGameRunning);
+                }
+            } catch (err) {
+                console.error('Error comparing passwords:', err);
+                event.reply('login-result', 'Error comparing passwords');
+                isGameRunning = false;
+                mainWindow.webContents.send('update-launch-button', isGameRunning);
+            }
+        });
     });
 
     // Update the updateFiles function to accept event
@@ -146,11 +220,11 @@ if (!gotTheLock) {
         return new Promise((resolve, reject) => {
             const filesUrl = 'https://files.shukketsu.app/files.json';
             const whitelistUrl = 'https://files.shukketsu.app/whitelisted_files.json';
-    
+
             let filesToKeep = new Set();
             let directoriesToKeep = new Set();
             let prefixesToKeep = [];
-    
+
             // Fetch and parse whitelist
             https.get(whitelistUrl, (response) => {
                 let whitelistData = '';
@@ -162,11 +236,11 @@ if (!gotTheLock) {
                         const whitelist = JSON.parse(whitelistData);
                         whitelist.files.forEach(file => filesToKeep.add(file));
                         whitelist.directories.forEach(dir => directoriesToKeep.add(path.normalize(dir)));
-    
+
                         if (whitelist.prefixes) {
                             prefixesToKeep = whitelist.prefixes.map(prefix => prefix.toLowerCase());
                         }
-    
+
                         // Fetch and parse files list
                         https.get(filesUrl, (response) => {
                             let data = '';
@@ -178,20 +252,20 @@ if (!gotTheLock) {
                                     const files = JSON.parse(data);
                                     let totalFiles = files.length;
                                     let processedFiles = 0;
-    
+
                                     // Add files from files.json to the set of files to keep
                                     files.forEach(file => filesToKeep.add(path.normalize(file.filename)));
-    
+
                                     // Process files from files.json
                                     files.forEach(file => {
                                         const filename = file.filename;
                                         const expectedHash = file.hash;
                                         const fileUrl = `https://files.shukketsu.app/files/${filename}`;
                                         const fullPath = path.join(minecraftPath, filename);
-    
+
                                         let fileExists = fs.existsSync(fullPath);
                                         let fileHash = '';
-    
+
                                         if (fileExists) {
                                             fileHash = crypto.createHash('sha256').update(fs.readFileSync(fullPath)).digest('hex');
                                             if (fileHash === expectedHash) {
@@ -205,7 +279,7 @@ if (!gotTheLock) {
                                         } else {
                                             console.log(`File ${filename} does not exist. Downloading...`);
                                         }
-    
+
                                         const directory = path.dirname(fullPath);
                                         try {
                                             if (!fs.existsSync(directory)) {
@@ -217,7 +291,7 @@ if (!gotTheLock) {
                                             checkProgress();
                                             return;
                                         }
-    
+
                                         downloadFile(fileUrl, fullPath).then(() => {
                                             const downloadedFileHash = crypto.createHash('sha256').update(fs.readFileSync(fullPath)).digest('hex');
                                             if (downloadedFileHash !== expectedHash) {
@@ -233,7 +307,7 @@ if (!gotTheLock) {
                                             checkProgress();
                                         });
                                     });
-    
+
                                     // Remove files not in files.json or not whitelisted
                                     function removeOldFiles() {
                                         function deleteDirectoryRecursively(dirPath) {
@@ -255,9 +329,9 @@ if (!gotTheLock) {
                                                         } else {
                                                             const relativeFilePath = path.relative(minecraftPath, fullPath);
                                                             const baseDir = relativeFilePath.split(path.sep)[0];
-    
+
                                                             const fileName = path.basename(relativeFilePath);
-    
+
                                                             // Check if the file is not in files.json, its base directory is not whitelisted, and it does not match any whitelisted prefix
                                                             if (
                                                                 !filesToKeep.has(relativeFilePath) &&
@@ -275,7 +349,7 @@ if (!gotTheLock) {
                                                         }
                                                     });
                                                 });
-    
+
                                                 // After processing files, check if directory should be deleted
                                                 fs.readdir(dirPath, (err, remainingFiles) => {
                                                     if (err) {
@@ -294,19 +368,19 @@ if (!gotTheLock) {
                                                 });
                                             });
                                         }
-    
+
                                         deleteDirectoryRecursively(minecraftPath);
-    
+
                                         resolve(true);
                                     }
-    
+
                                     function checkProgress() {
                                         mainWindow.webContents.send('progress', {
                                             total: totalFiles,
                                             task: processedFiles,
                                             type: 'Sunucu dosyaları'
                                         });
-    
+
                                         if (processedFiles === totalFiles) {
                                             removeOldFiles(); // Remove files not in the list
                                         }
@@ -327,7 +401,7 @@ if (!gotTheLock) {
             });
         });
     }
-    
+
     // Helper function to download a file
     function downloadFile(url, dest) {
         return new Promise((resolve, reject) => {
