@@ -6,9 +6,9 @@ Luthien Minecraft Launcher is a custom launcher for Minecraft that provides a se
 
 Choose your operating system to download the latest version of Luthien Minecraft Launcher:
 
-[![Download for Windows](https://img.shields.io/badge/Download-Windows-blue?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/candied-apple/Luthien-Minecraft-Launcher/releases/download/v0.0.8/luthien-mc-Setup-0.0.8.exe)
-[![Download for Linux](https://img.shields.io/badge/Download-Linux-green?style=for-the-badge&logo=linux&logoColor=white)](https://github.com/candied-apple/Luthien-Minecraft-Launcher/releases/download/v0.0.8/luthien-mc-0.0.8.AppImage)
-[![Download for macOS](https://img.shields.io/badge/Download-macOS-orange?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/candied-apple/Luthien-Minecraft-Launcher/releases/download/v0.0.8/luthien-mc-0.0.8-arm64.dmg)
+[![Download for Windows](https://img.shields.io/badge/Download-Windows-blue?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/candied-apple/Luthien-Minecraft-Launcher/releases/download/v0.0.9/luthien-mc-Setup-0.0.9.exe)
+[![Download for Linux](https://img.shields.io/badge/Download-Linux-green?style=for-the-badge&logo=linux&logoColor=white)](https://github.com/candied-apple/Luthien-Minecraft-Launcher/releases/download/v0.0.9/luthien-mc-0.0.9.AppImage)
+[![Download for macOS](https://img.shields.io/badge/Download-macOS-orange?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/candied-apple/Luthien-Minecraft-Launcher/releases/download/v0.0.9/luthien-mc-0.0.9-arm64.dmg)
 
 ## Installation Instructions
 
@@ -18,8 +18,8 @@ Choose your operating system to download the latest version of Luthien Minecraft
 
 ### Linux
 1. Download the `.AppImage` file from the link above.
-2. Make the file executable: `chmod +x luthien-mc-0.0.8.AppImage`
-3. Run the AppImage: `./luthien-mc-0.0.8.AppImage`
+2. Make the file executable: `chmod +x luthien-mc-0.0.9.AppImage`
+3. Run the AppImage: `./luthien-mc-0.0.9.AppImage`
 
 ### macOS
 1. Download the `.dmg` file from the link above.
