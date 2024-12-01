@@ -1,55 +1,56 @@
 {
-  "name": "luthien-mc",
-  "version": "0.0.5",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron ."
-  },
-  "build": {
-    "appId": "com.candiedapple.luthienminecraft",
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "candied-apple",
-        "repo": "Luthien-Minecraft-Launcher"
+    "name": "luthien-mc",
+    "version": "0.0.6",
+    "main": "main.js",
+    "scripts": {
+      "start": "electron ."
+    },
+    "build": {
+      "appId": "com.candiedapple.luthienminecraft",
+      "publish": [
+        {
+          "provider": "github",
+          "owner": "candied-apple",
+          "repo": "Luthien-Minecraft-Launcher"
+        }
+      ],
+      "mac": {
+        "category": "public.game",
+        "target": "dmg",
+        "icon": "build/icon.icns"
+      },
+      "linux": {
+        "target": "AppImage",
+        "category": "Game",
+        "icon": "build/icon.png"
+      },
+      "win": {
+        "target": "nsis",
+        "icon": "build/icon.ico"
+      },
+      "files": [
+        "build/**/*",
+        "index.html",
+        "main.js",
+        "renderer.js",
+        "styles.css"
+      ],
+      "directories": {
+        "buildResources": "build"
       }
-    ],
-    "mac": {
-      "category": "public.game",
-      "target": "dmg",
-      "icon": "build/icon.icns"
     },
-    "linux": {
-      "target": "AppImage",
-      "category": "Game",
-      "icon": "build/icon.png"
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": "",
+    "dependencies": {
+      "electron-updater": "^6.2.1",
+      "minecraft-launcher-core": "^3.18.1",
+      "tomate-loaders": "^2.0.2"
     },
-    "win": {
-      "target": "nsis",
-      "icon": "build/icon.ico"
-    },
-    "files": [
-      "build/**/*",
-      "index.html",
-      "main.js",
-      "renderer.js",
-      "styles.css"
-    ],
-    "directories": {
-      "buildResources": "build"
+    "devDependencies": {
+      "electron": "^31.3.1",
+      "electron-builder": "^24.13.3"
     }
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "electron-updater": "^6.2.1",
-    "minecraft-launcher-core": "^3.18.1",
-    "tomate-loaders": "^2.0.2"
-  },
-  "devDependencies": {
-    "electron": "^31.3.1",
-    "electron-builder": "^24.13.3"
   }
-}
+  

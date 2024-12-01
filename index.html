@@ -3,71 +3,90 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Luthien SMP Minecraft Launcher</title>
+    <title>Minecraft Launcher</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.4.2/css/all.css">
 </head>
 
 <body>
-
-    <audio id="background-music" src="build/bgmusic.mp3" autoplay loop></audio>
-    <video id="background-video" src="./build/luthienbg.mp4" muted autoplay loop></video>
-    
-    <nav style="-webkit-app-region: drag" class="title-bar">
-        <p id="title">Luthien SMP Minecraft Launcher</p>
-        <div class="nav-buttons">
-            <div id="volume-control">
-                <i class="fa-solid fa-volume-low"></i>
-                <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1">
+    <div class="launcher-container">
+        <div class="titlebar">
+            <div class="titlebar-buttons">
+                <button class="titlebar-button close"></button>
+                <button class="titlebar-button minimize"></button>
+                <!-- <button class="titlebar-button maximize"></button> -->
             </div>
-            <button id="minimize"><i class="fa-solid fa-minus"></i></button>
-            <button id="close"><i class="fa-solid fa-xmark"></i></button>
         </div>
-    </nav>
+        <div class="tab-navigation">
+            <button class="tab-btn active" data-tab="play">Play</button>
+            <button class="tab-btn" data-tab="logs">Logs</button>
+            <button class="tab-btn" data-tab="settings">Settings</button>
+            <button class="tab-btn" data-tab="credits">Credits</button>
+            <button class="tab-btn" data-tab="updates">Update Notes</button>
+        </div>
 
-    <div id="tabs">
-        <button class="tab active" data-tab="launch">Play</button>
-        <button class="tab" data-tab="logs">Logs</button>
-        <button class="tab" data-tab="settings">Settings</button>
-        <button class="tab" data-tab="credits">Credits</button>
-        <button class="tab" data-tab="update-notes">Update Notes</button>
-    </div>
-
-    <div id="content">
-        <div id="launch" class="tab-content">
-            <h1>Play</h1>
-            <form id="loginform">
-                <i class="fa-solid fa-envelope"></i>
-                <input type="email" id="username" placeholder="E-Mail" required>
-                <div>
-                    <i class="fa-solid fa-key"></i>
-                    <input type="password" id="password" placeholder="Password" required>
-                    <span class="password-toggle-icon"><i class="fa-solid fa-eye" id="toggle-password"></i></span>
+        <div id="play" class="tab-content active play-section">
+            <div class="profile-section">
+                <div class="profile-avatar"></div>
+                <h2>Luthien SMP</h2>
+                <p>Online Status: Fetching...</p>
+            </div>
+            <div class="launcher-actions">
+                <div class="login-form">
+                    <div class="input-group">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="username" placeholder="Email" class="custom-input">
+                    </div>
+                    <div class="input-group">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Password" class="custom-input">
+                        <i class="fas fa-eye password-toggle"></i>
+                    </div>
+                    <p id="feedback-message" style="color: #EC6F9E;"></p>
                 </div>
-                <button id="launch-button" type="submit">Launch</button>
-            </form>
-            <div id="progress-container" style="display: none;">
-                <div id="progress-text"></div>
-                <div id="progress-bar"></div>
+                <button id="launch-button" class="launch-button">Launch Minecraft</button>
+                <div id="progress-container" style="display: none;">
+                    <div class="progress-wrapper">
+                        <div id="progress-bar"></div>
+                    </div>
+                    <p id="progress-text">Preparing...</p>
+                </div>
+
+                <div id="update-notification" style="display: none;">
+                    <div class="progress-wrapper">
+                        <div id="update-progress-bar"></div>
+                    </div>
+                    <p id="update-progress-text">Downloading update...</p>
+                    <button id="restart-button" style="display: none;">Restart to Update</button>
+                </div>
             </div>
         </div>
-        <div id="logs" class="tab-content" style="display: none;">
-            <h1>Logs</h1>
-            <pre id="log-output"></pre>
+
+        <div id="logs" class="tab-content logs-section">
+            <h3>Launcher Logs</h3>
+            <div id="log-output" class="logs-content">
+                <!-- Log messages will be appended here -->
+            </div>
+            <button id="scroll-to-bottom" class="scroll-button">
+                <i class="fas fa-arrow-down"></i>
+            </button>
         </div>
-        <div id="settings" class="tab-content" style="display: none;">
-            <h1>Settings</h1>
-            <label for="min-memory">Minimum Ram:</label>
-            <input type="range" id="min-memory" min="4" max="16" value="4" step="1">
-            <span id="min-memory-value">4G</span>
-            <br>
-            <label for="max-memory">Maximum Ram:</label>
-            <input type="range" id="max-memory" min="4" max="16" value="6" step="1">
-            <span id="max-memory-value">6G</span>
+        <div id="settings" class="tab-content settings-section">
+            <h3>Launcher Settings</h3>
+            <div>
+                <label>RAM Allocation</label>
+                <input type="range" id="min-memory" min="2" max="12" value="2">
+                <span id="min-memory-value">2G</span>
+            </div>
+            <div>
+                <label>Max RAM Allocation</label>
+                <input type="range" id="max-memory" min="2" max="12" value="4">
+                <span id="max-memory-value">4G</span>
+            </div>
         </div>
-        <div id="credits" class="tab-content" style="display: none;">
-            <h1>Credits</h1>
+
+        <div id="credits" class="tab-content credits-section">
+            <h3>Launcher Credits</h3>
             <p>Developer: candiedapple</p>
             <p>If you enjoy my work, consider supporting me ❤️</p>
             <a id="your-link" href="https://buymeacoffee.com/candiedapple" target="_blank" style="color: #C8ACD6;">Buy
@@ -79,25 +98,14 @@
             <a id="your-link" href="https://discord.gg/shukketsu" target="_blank"
                 style="color: #C8ACD6;">discord.gg/shukketsu</a>
         </div>
-        <div id="update-notes" class="tab-content" style="display: none;">
-            <h1>Update Notes</h1>
-            <div id="notes"></div>
+        <div id="updates" class="tab-content updates-section">
+            <div id="notes">Loading update notes...</div>
         </div>
+    </div>
 
-        <!-- Update Notification Section -->
-        <div id="update-notification" style="display: none; background-color: #eee; padding: 10px; text-align: center;">
-            <p style="color: black;">There is a new update! <br> Restart the app after update finished.</p>
-            <button id="restart-button">Restart Now</button>
-        </div>
 
-        <!-- Update Progress Section -->
-        <div id="update-progress-container" style="display: none;">
-            <div id="update-progress-text"></div>
-            <div id="update-progress-bar" style="width: 0%; background-color: #C8ACD6; height: 20px;"></div>
-        </div>
-
-        <script src="renderer.js"></script>
-
+    </div>
+    <script src="./renderer.js"></script>
 </body>
 
 </html>

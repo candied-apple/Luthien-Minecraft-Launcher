@@ -1,70 +1,139 @@
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, shell } = require('electron');
 const fs = require('fs');
 const path = require('path');
-const { shell } = require('electron');
+
+// Existing tab button functionality
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+        btn.classList.add('active');
+        document.getElementById(btn.getAttribute('data-tab')).classList.add('active');
+    });
+});
+
+document.getElementById('launch-button').addEventListener('click', function(event) {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const minMemory = document.getElementById('min-memory').value + 'G';
+    const maxMemory = document.getElementById('max-memory').value + 'G';
+
+    // Show progress container
+    document.getElementById('progress-container').style.display = 'block';
+    
+    // Save credentials
+    localStorage.setItem('username', username);
+    localStorage.setItem('password', password);
+
+    // Send launch event to main process
+    ipcRenderer.send('launch-minecraft', username, password, {
+        min: minMemory,
+        max: maxMemory
+    });
+});
+
+// Window controls
+document.querySelector('.titlebar-button.close').addEventListener('click', () => {
+    window.close();
+});
+
+document.querySelector('.titlebar-button.minimize').addEventListener('click', () => {
+    ipcRenderer.send('minimize-window');
+});
+
+// Password visibility toggle (keeping existing implementation)
+document.querySelector('.password-toggle').addEventListener('click', function() {
+    const inputGroup = this.closest('.input-group');
+    const passwordInput = inputGroup.querySelector('input[type="password"]') || inputGroup.querySelector('input[type="text"]');
+    
+    if (passwordInput) {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        this.classList.toggle('fa-eye');
+        this.classList.toggle('fa-eye-slash');
+        
+        console.log('Password visibility toggled:', type);
+    } else {
+        console.error('Password input not found');
+    }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Load saved username
     const savedUsername = localStorage.getItem('username');
     if (savedUsername) {
         document.getElementById('username').value = savedUsername;
     }
-});
 
-document.addEventListener('DOMContentLoaded', () => {
+    // Load saved password
     const savedPassword = localStorage.getItem('password');
     if (savedPassword) {
         document.getElementById('password').value = savedPassword;
     }
-});
 
-document.addEventListener('DOMContentLoaded', () => {
-    const audio = document.getElementById('background-music');
-    const volumeSlider = document.getElementById('volume-slider');
-
-    // Retrieve the saved volume level from localStorage
-    const savedVolume = localStorage.getItem('volumeLevel');
-    if (savedVolume !== null) {
-        audio.volume = savedVolume;
-        volumeSlider.value = savedVolume;
+    // Load saved min memory
+    const savedMinMemory = localStorage.getItem('minMemory');
+    if (savedMinMemory) {
+        document.getElementById('min-memory').value = savedMinMemory;
+        document.getElementById('min-memory-value').textContent = savedMinMemory + 'G';
     }
 
-    // Update the volume level and save it to localStorage when the slider value changes
-    volumeSlider.addEventListener('input', (event) => {
-        const volume = event.target.value;
-        audio.volume = volume;
-        localStorage.setItem('volumeLevel', volume);
-    });
+    // Load saved max memory
+    const savedMaxMemory = localStorage.getItem('maxMemory');
+    if (savedMaxMemory) {
+        document.getElementById('max-memory').value = savedMaxMemory;
+        document.getElementById('max-memory-value').textContent = savedMaxMemory + 'G';
+    }
+
+    // Fetch update notes
+    const fetchUpdateNotes = async () => {
+        try {
+            const response = await fetch('https://files.shukketsu.app/update-notes.html');
+            if (!response.ok) throw new Error('Network response was not ok');
+            const data = await response.text();
+            document.getElementById('notes').innerHTML = data;
+        } catch (error) {
+            console.error('Error fetching the text file:', error);
+            document.getElementById('notes').innerText = 'Failed to load content.';
+        }
+    };
+    fetchUpdateNotes();
+    
+    // Fetch online status
+    const fetchOnlineStatus = async () => {
+        try {
+            const response = await fetch('https://api.mcsrvstat.us/2/shukketsu.app');
+            if (!response.ok) throw new Error('Network response was not ok');
+            const data = await response.json();
+            const onlineStatus = `${data.players.online}/${data.players.max}`;
+            document.querySelector('.profile-section p').textContent = `Online Status: ${onlineStatus}`;
+        } catch (error) {
+            console.error('Error fetching the online status:', error);
+            document.querySelector('.profile-section p').textContent = 'Online Status: N/A';
+        }
+    };
+    fetchOnlineStatus();
+    setInterval(fetchOnlineStatus, 20000); // Update every 20 seconds
+
 });
 
-const tabs = document.querySelectorAll('.tab');
-const tabContents = document.querySelectorAll('.tab-content');
-
-tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-        const target = tab.dataset.tab;
-
-        tabContents.forEach(content => {
-            content.style.display = content.id === target ? 'block' : 'none';
-        });
-
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-    });
-});
-
-document.getElementById('launch').style.display = 'block';
 
 
-
+// Memory slider handlers
 document.getElementById('min-memory').addEventListener('input', function () {
-    document.getElementById('min-memory-value').textContent = this.value + 'G';
+    const minMemoryValue = this.value + 'G';
+    document.getElementById('min-memory-value').textContent = minMemoryValue;
+    localStorage.setItem('minMemory', this.value);
 });
 
 document.getElementById('max-memory').addEventListener('input', function () {
-    document.getElementById('max-memory-value').textContent = this.value + 'G';
+    const maxMemoryValue = this.value + 'G';
+    document.getElementById('max-memory-value').textContent = maxMemoryValue;
+    localStorage.setItem('maxMemory', this.value);
 });
-
-// Handle progress for file downloads
+// Progress handlers
 ipcRenderer.on('progress', (event, progress) => {
     const progressBar = document.getElementById('progress-bar');
     const progressText = document.getElementById('progress-text');
@@ -74,18 +143,12 @@ ipcRenderer.on('progress', (event, progress) => {
     const percentage = (downloaded / total) * 100;
 
     progressBar.style.width = `${percentage}%`;
-    progressText.textContent = `${progress.type} indiriliyor: ${downloaded}/${total} (${percentage.toFixed(2)}%)`;
+    progressText.textContent = `${progress.type} downloading: ${downloaded}/${total} (${percentage.toFixed(2)}%)`;
 
-    if (percentage >= 100) {
-        setTimeout(() => {
-            document.getElementById('progress-container').style.display = 'none';
-        }, 2000);
-    } else {
-        document.getElementById('progress-container').style.display = 'block';
-    }
+    document.getElementById('progress-container').style.display = percentage >= 100 ? 'none' : 'block';
 });
 
-// Handle update notifications and progress
+// Update notification handlers
 ipcRenderer.on('update_available', () => {
     document.getElementById('update-notification').style.display = 'block';
 });
@@ -95,102 +158,67 @@ ipcRenderer.on('update-progress', (event, percent) => {
     const updateProgressText = document.getElementById('update-progress-text');
 
     updateProgressBar.style.width = `${percent}%`;
-    updateProgressText.textContent = `Güncelleme indiriliyor: ${percent.toFixed(2)}%`;
+    updateProgressText.textContent = `Update downloading: ${percent.toFixed(2)}%`;
 
-    if (percent >= 100) {
-        setTimeout(() => {
-            document.getElementById('update-progress-container').style.display = 'none';
-        }, 2000);
-    } else {
-        document.getElementById('update-progress-container').style.display = 'block';
-    }
+    document.getElementById('update-progress-container').style.display = percent >= 100 ? 'none' : 'block';
 });
 
+ipcRenderer.on('update_downloaded', () => {
+    document.getElementById('restart-button').style.display = 'block';
+});
+
+// Log handler
 ipcRenderer.on('log', (event, message) => {
     const logOutput = document.getElementById('log-output');
     logOutput.textContent += message + '\n';
-    logOutput.scrollTop = logOutput.scrollHeight;
 });
 
+const logOutput = document.getElementById('log-output');
+const scrollToBottomButton = document.getElementById('scroll-to-bottom');
+
+// Show the button when the user scrolls up
+logOutput.addEventListener('scroll', () => {
+    if (logOutput.scrollTop < logOutput.scrollHeight - logOutput.clientHeight) {
+        scrollToBottomButton.style.display = 'block';
+    } else {
+        scrollToBottomButton.style.display = 'none';
+    }
+});
+
+// Scroll to the bottom when the button is clicked
+scrollToBottomButton.addEventListener('click', () => {
+    logOutput.scrollTop = logOutput.scrollHeight;
+});
+// Button handlers
 document.getElementById('restart-button').addEventListener('click', () => {
     ipcRenderer.send('restart_app');
 });
 
-document.querySelector("#minimize").addEventListener("click", () => {
-    ipcRenderer.send("manualMinimize");
+
+// Open credits links in external browser
+document.querySelectorAll('#credits a').forEach(link => {
+    link.addEventListener('click', (event) => {
+        event.preventDefault();
+        shell.openExternal(link.href);
+    });
 });
-
-document.querySelector("#close").addEventListener("click", () => {
-    ipcRenderer.send("manualClose");
-});
-
-document.getElementById('your-link').addEventListener('click', (event) => {
-    event.preventDefault(); // Prevent default anchor click behavior
-    shell.openExternal('https://buymeacoffee.com/candiedapple');
-});
-
-
 
 document.addEventListener('DOMContentLoaded', () => {
-    const fetchUpdateNotes = async () => {
-        const url = 'https://files.shukketsu.app/update-notes.html'; // Replace with the URL of your text file
+    const launchButton = document.getElementById('launch-button');
+    const emailInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const feedbackMessage = document.getElementById('feedback-message');
 
-        try {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.text();
-            document.getElementById('notes').innerHTML = data; // Update the inner HTML
-        } catch (error) {
-            console.error('Error fetching the text file:', error);
-            document.getElementById('notes').innerText = 'İçerik yüklenemedi.'; // Display error message
-        }
-    };
-
-    fetchUpdateNotes(); // Call the function to fetch update notes
-});
-
-document.getElementById('toggle-password').addEventListener('click', function () {
-    var passwordInput = document.getElementById('password');
-    var toggleIcon = document.getElementById('toggle-password');
-    
-    // Toggle the type attribute
-    var type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-    passwordInput.setAttribute('type', type);
-    
-    // Toggle the icon class
-    if (type === 'text') {
-        toggleIcon.classList.remove('fa-eye');
-        toggleIcon.classList.add('fa-eye-slash');
-    } else {
-        toggleIcon.classList.remove('fa-eye-slash');
-        toggleIcon.classList.add('fa-eye');
-    }
-});
-
-
-document.getElementById('launch-button').addEventListener('click', function(event) {
-    // Check if the form is valid
-    if (!document.getElementById('loginform').checkValidity()) {
-        // Prevent form submission
-        event.preventDefault();
-        // Trigger built-in validation message
-        document.getElementById('loginform').reportValidity();
-        return; // Exit the function if the form is invalid
+    function toggleLaunchButton() {
+        const isEmailEmpty = !emailInput.value;
+        const isPasswordEmpty = !passwordInput.value;
+        launchButton.disabled = isEmailEmpty || isPasswordEmpty;
+        feedbackMessage.textContent = isEmailEmpty || isPasswordEmpty ? 'Both email and password are required.' : '';
     }
 
-    // If the form is valid, proceed with the following actions
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-    const minMemory = document.getElementById('min-memory').value + 'G';
-    const maxMemory = document.getElementById('max-memory').value + 'G';
+    emailInput.addEventListener('input', toggleLaunchButton);
+    passwordInput.addEventListener('input', toggleLaunchButton);
 
-    localStorage.setItem('username', username);
-    localStorage.setItem('password', password);
-
-    ipcRenderer.send('launch-minecraft', username, password, { min: minMemory, max: maxMemory });
-    document.getElementById('progress-container').style.display = 'block';
+    // Initial check
+    toggleLaunchButton();
 });
-
-

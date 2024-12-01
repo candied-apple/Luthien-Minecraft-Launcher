@@ -5,7 +5,7 @@ const { fabric } = require('tomate-loaders');
 const fs = require('fs');
 const https = require('https');
 const crypto = require('crypto');
-const { autoUpdater } = require('electron-updater'); // Import autoUpdater
+const { autoUpdater } = require('electron-updater');
 
 // Prevent multiple instances
 const gotTheLock = app.requestSingleInstanceLock();
@@ -13,7 +13,7 @@ const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
     app.quit();
 } else {
-    // Get the user data directory
+    // Initialize paths
     const userDataPath = path.normalize(app.getPath('userData'));
     const minecraftPath = path.join(userDataPath, 'luthienminecraft');
     const authlibInjectorPath = path.join(minecraftPath, 'authlib-injector.jar');
@@ -21,69 +21,84 @@ if (!gotTheLock) {
 
     function createWindow() {
         mainWindow = new BrowserWindow({
-            width: 820,
-            height: 620,
-            autoHideMenuBar: true,
-            transparent: true,
-            resizable: false,
+            width: 800,
+            height: 700,
             frame: false,
+            resizable: false,
+            transparent: true,
+            backgroundColor: '#00000000',
+            autoHideMenuBar: true,
             webPreferences: {
-                preload: path.join(__dirname, 'renderer.js'),
+                nodeIntegration: true,
                 contextIsolation: false,
-                nodeIntegration: true
+
             }
         });
+
         mainWindow.loadFile('index.html');
-        mainWindow.on('closed', function () {
+        
+        mainWindow.on('closed', () => {
             mainWindow = null;
         });
     }
 
-    app.on('ready', () => {
+    // App lifecycle events
+    app.whenReady().then(() => {
         createWindow();
-        autoUpdater.checkForUpdatesAndNotify(); // Check for updates when the app is ready
+        autoUpdater.checkForUpdatesAndNotify();
     });
 
-    app.on('window-all-closed', function () {
+    app.on('window-all-closed', () => {
         if (process.platform !== 'darwin') {
             app.quit();
         }
     });
 
-    app.on('activate', function () {
+    app.on('activate', () => {
         if (mainWindow === null) {
             createWindow();
         }
     });
 
     // Handle second instance
-    app.on('second-instance', (event, commandLine, workingDirectory) => {
-        // Focus on the main window if the user tried to open another instance
+    app.on('second-instance', () => {
         if (mainWindow) {
             if (mainWindow.isMinimized()) mainWindow.restore();
             mainWindow.focus();
         }
     });
 
-    // Handle auto-updates
+    // Auto-updater events
     autoUpdater.on('update-available', () => {
         mainWindow.webContents.send('update_available');
     });
 
     autoUpdater.on('download-progress', (progressObj) => {
-        const { percent } = progressObj;
-        mainWindow.webContents.send('update-progress', percent); // Send progress to renderer
+        mainWindow.webContents.send('update-progress', progressObj.percent);
     });
 
     autoUpdater.on('update-downloaded', () => {
         mainWindow.webContents.send('update_downloaded');
     });
 
-    ipcMain.on('restart_app', () => {
-        autoUpdater.quitAndInstall(); // Restart and install the update
+    // IPC handlers
+    ipcMain.on('minimize-window', () => {
+        mainWindow.minimize();
     });
 
-    // Handle launching Minecraft
+    ipcMain.on('restart_app', () => {
+        autoUpdater.quitAndInstall();
+    });
+
+    ipcMain.on('manualMinimize', () => {
+        mainWindow.minimize();
+    });
+
+    ipcMain.on('manualClose', () => {
+        app.quit();
+    });
+
+    // Minecraft launch handler
     ipcMain.on('launch-minecraft', async (event, username, password, memory) => {
         const updateResult = await updateFiles(event);
 
@@ -95,13 +110,11 @@ if (!gotTheLock) {
                 gameVersion: '1.21.1',
                 rootPath: path.join(minecraftPath),
             });
+
             const opts = {
                 authorization: Authenticator.getAuth(username, password),
                 ...launchConfig,
-                memory: {
-                    max: memory.max,
-                    min: memory.min
-                },
+                memory: memory,
                 overrides: {
                     detached: false,
                 },
@@ -110,7 +123,6 @@ if (!gotTheLock) {
                     "-Duser.language=en",
                     "-Duser.country=US"
                 ]
-
             };
 
             launcher.launch(opts);
@@ -335,12 +347,4 @@ if (!gotTheLock) {
             });
         });
     }
-
-    ipcMain.on("manualMinimize", () => {
-        mainWindow.minimize();
-    });
-
-    ipcMain.on("manualClose", () => {
-        app.quit();
-    });
 }
