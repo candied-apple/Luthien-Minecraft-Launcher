@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function toggleLaunchButton() {
         const isEmailEmpty = !emailInput.value;
         const isPasswordEmpty = !passwordInput.value;
-        const shouldDisable = isEmailEmpty || isPasswordEmpty || launchButton.disabled;
+        const shouldDisable = isEmailEmpty || isPasswordEmpty;
         launchButton.disabled = shouldDisable;
         launchButton.classList.toggle('disabled', shouldDisable);
         feedbackMessage.textContent = isEmailEmpty || isPasswordEmpty ? 'Both email and password are required.' : '';
