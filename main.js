@@ -7,7 +7,7 @@ const https = require('https');
 const crypto = require('crypto');
 const { autoUpdater } = require('electron-updater');
 const axios = require('axios');
-require('dotenv').config();
+
 
 // Prevent multiple instances
 const gotTheLock = app.requestSingleInstanceLock();
@@ -28,11 +28,11 @@ if (!gotTheLock) {
             frame: false,
             resizable: false,
             transparent: true,
-            backgroundColor: '#00000000',
             autoHideMenuBar: true,
             webPreferences: {
                 nodeIntegration: true,
                 contextIsolation: false,
+                devTools: false,
             }
         });
 

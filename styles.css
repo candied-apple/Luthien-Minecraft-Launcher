@@ -36,6 +36,7 @@ body {
     min-height: 100vh;
     overflow: hidden;
     perspective: 1000px;
+    user-select: none;
 }
 
 .titlebar {
@@ -90,11 +91,10 @@ body {
     position: relative;
     width: 800px;
     height: 700px;
-    background-color: rgba(20, 20, 30, 0.9);
+    background-color: rgba(20, 20, 30, 0.95);
     border-radius: 15px;
     padding: 30px;
     padding-top: 38px; /* 28px titlebar + 10px spacing */
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
 }
 
 
