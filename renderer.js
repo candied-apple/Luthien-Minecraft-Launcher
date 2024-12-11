@@ -153,7 +153,7 @@ ipcRenderer.on('progress', (event, progress) => {
     const percentage = (downloaded / total) * 100;
 
     progressBar.style.width = `${percentage}%`;
-    progressText.textContent = `${progress.type} downloading: ${downloaded}/${total} (${percentage.toFixed(2)}%)`;
+    progressText.textContent = `Downloading ${progress.type}: ${downloaded}/${total} (${percentage.toFixed(2)}%)`;
 
     document.getElementById('progress-container').style.display = percentage >= 100 ? 'none' : 'block';
 });

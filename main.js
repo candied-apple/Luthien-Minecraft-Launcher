@@ -345,7 +345,7 @@ if (!gotTheLock) {
                                         mainWindow.webContents.send('progress', {
                                             total: totalFiles,
                                             task: processedFiles,
-                                            type: 'Sunucu dosyaları'
+                                            type: 'server files'
                                         });
 
                                         if (processedFiles === totalFiles) {
