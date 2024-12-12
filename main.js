@@ -125,7 +125,7 @@ if (!gotTheLock) {
                 const updateResult = await updateFiles(event);
 
                 if (updateResult) {
-                    const customApiUrl = 'https://skins.shukketsu.app/api/yggdrasil/authserver';
+                    const customApiUrl = 'https://mc.shukketsu.app/api/yggdrasil/authserver';
                     Authenticator.changeApiUrl(customApiUrl);
                     const launcher = new Client();
                     const launchConfig = await fabric.getMCLCLaunchConfig({
@@ -141,7 +141,7 @@ if (!gotTheLock) {
                             detached: false,
                         },
                         customArgs: [
-                            `-javaagent:${authlibInjectorPath}=https://skins.shukketsu.app/api/yggdrasil`,
+                            `-javaagent:${authlibInjectorPath}=https://mc.shukketsu.app/api/yggdrasil`,
                             "-Duser.language=en",
                             "-Duser.country=US"
                         ]
