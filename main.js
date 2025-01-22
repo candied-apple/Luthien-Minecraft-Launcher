@@ -17,7 +17,7 @@ if (!gotTheLock) {
 } else {
     // Initialize paths
     const userDataPath = path.normalize(app.getPath('userData'));
-    const minecraftPath = path.join(userDataPath, 'luthienminecraft');
+    const minecraftPath = path.join(userDataPath, '.minecraft');
     const authlibInjectorPath = path.join(minecraftPath, 'authlib-injector.jar');
     let mainWindow;
 

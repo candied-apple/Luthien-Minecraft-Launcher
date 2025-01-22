@@ -1,12 +1,12 @@
 {
-    "name": "luthien-mc",
-    "version": "1.0.4",
+    "name": "Luthien MC",
+    "version": "1.0.5",
     "main": "main.js",
     "scripts": {
         "start": "electron ."
     },
     "build": {
-        "appId": "com.candiedapple.luthienminecraft",
+        "appId": "com.candiedapple.luthienmc",
         "publish": [
             {
                 "provider": "github",
