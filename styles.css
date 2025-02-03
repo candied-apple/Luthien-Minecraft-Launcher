@@ -288,7 +288,7 @@ body {
     margin-bottom: 15px;
 }
 
-/* Update existing icon styles for the left icon (email/lock) */
+/* Update existing icon styles for the left icon (user/lock) */
 .input-group i:not(.password-toggle) {
     position: absolute;
     left: 12px;

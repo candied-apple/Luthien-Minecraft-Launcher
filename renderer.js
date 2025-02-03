@@ -31,17 +31,6 @@ document.getElementById('launch-button').addEventListener('click', function(even
     });
 });
 
-ipcRenderer.on('login-result', (event, message) => {
-    if (message === 'Password is correct') {
-        
-    // Show progress container
-    document.getElementById('progress-container').style.display = 'block';
-        // Proceed with showing progress or launching the game
-    } else {
-        // Show error message to the user
-        document.getElementById('feedback-message').textContent = message;
-    }
-});
 
 // Window controls
 document.querySelector('.titlebar-button.close').addEventListener('click', () => {
@@ -215,20 +204,20 @@ document.querySelectorAll('#credits a').forEach(link => {
 
 document.addEventListener('DOMContentLoaded', () => {
     const launchButton = document.getElementById('launch-button');
-    const emailInput = document.getElementById('username');
+    const userInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
     const feedbackMessage = document.getElementById('feedback-message');
 
     function toggleLaunchButton() {
-        const isEmailEmpty = !emailInput.value;
+        const isUserEmpty = !userInput.value;
         const isPasswordEmpty = !passwordInput.value;
-        const shouldDisable = isEmailEmpty || isPasswordEmpty;
+        const shouldDisable = isUserEmpty || isPasswordEmpty;
         launchButton.disabled = shouldDisable;
         launchButton.classList.toggle('disabled', shouldDisable);
-        feedbackMessage.textContent = isEmailEmpty || isPasswordEmpty ? 'Both email and password are required.' : '';
+        feedbackMessage.textContent = isUserEmpty || isPasswordEmpty ? 'Both Username and password are required.' : '';
     }
 
-    emailInput.addEventListener('input', toggleLaunchButton);
+    userInput.addEventListener('input', toggleLaunchButton);
     passwordInput.addEventListener('input', toggleLaunchButton);
 
     ipcRenderer.on('update-launch-button', (event, isGameRunning) => {

@@ -112,71 +112,56 @@ if (!gotTheLock) {
         mainWindow.webContents.send('update-launch-button', isGameRunning);
     
         try {
-            const response = await axios.post('http://shukketsu.app:3000/check-password', {
-                email: username,
-                password: password
+            const updateResult = await updateFiles(event);
+
+            if (updateResult) {
+            const customApiUrl = 'https://mc.shukketsu.app/api/yggdrasil/authserver';
+            Authenticator.changeApiUrl(customApiUrl);
+            const launcher = new Client();
+            const launchConfig = await fabric.getMCLCLaunchConfig({
+                gameVersion: '1.21.1',
+                rootPath: path.join(minecraftPath),
             });
 
-            console.log('Response:', response.data);
-            if (response.data.success) {
-                event.reply('login-result', 'Password is correct');
-                // Proceed with launching Minecraft
+            const opts = {
+                authorization: Authenticator.getAuth(username, password),
+                ...launchConfig,
+                memory: memory,
+                overrides: {
+                detached: false,
+                },
+                customArgs: [
+                `-javaagent:${authlibInjectorPath}=https://mc.shukketsu.app/api/yggdrasil`,
+                "-Duser.language=en",
+                "-Duser.country=US"
+                ]
+            };
 
-                const updateResult = await updateFiles(event);
+            launcher.launch(opts);
 
-                if (updateResult) {
-                    const customApiUrl = 'https://mc.shukketsu.app/api/yggdrasil/authserver';
-                    Authenticator.changeApiUrl(customApiUrl);
-                    const launcher = new Client();
-                    const launchConfig = await fabric.getMCLCLaunchConfig({
-                        gameVersion: '1.21.1',
-                        rootPath: path.join(minecraftPath),
-                    });
+            launcher.on('debug', (e) => {
+                console.log(e);
+                mainWindow.webContents.send('log', e);
+            });
+            launcher.on('data', (e) => {
+                console.log(e);
+                mainWindow.webContents.send('log', e);
+            });
+            launcher.on('progress', (e) => {
+                mainWindow.webContents.send('progress', e);
+            });
 
-                    const opts = {
-                        authorization: Authenticator.getAuth(username, password),
-                        ...launchConfig,
-                        memory: memory,
-                        overrides: {
-                            detached: false,
-                        },
-                        customArgs: [
-                            `-javaagent:${authlibInjectorPath}=https://mc.shukketsu.app/api/yggdrasil`,
-                            "-Duser.language=en",
-                            "-Duser.country=US"
-                        ]
-                    };
-
-                    launcher.launch(opts);
-
-                    launcher.on('debug', (e) => {
-                        console.log(e);
-                        mainWindow.webContents.send('log', e);
-                    });
-                    launcher.on('data', (e) => {
-                        console.log(e);
-                        mainWindow.webContents.send('log', e);
-                    });
-                    launcher.on('progress', (e) => {
-                        mainWindow.webContents.send('progress', e);
-                    });
-
-                    launcher.on('close', () => {
-                        isGameRunning = false;
-                        mainWindow.webContents.send('update-launch-button', isGameRunning);
-                    });
-                } else {
-                    isGameRunning = false;
-                    mainWindow.webContents.send('update-launch-button', isGameRunning);
-                }
-            } else {
-                event.reply('login-result', 'Password is incorrect');
+            launcher.on('close', () => {
                 isGameRunning = false;
                 mainWindow.webContents.send('update-launch-button', isGameRunning);
+            });
+            } else {
+            isGameRunning = false;
+            mainWindow.webContents.send('update-launch-button', isGameRunning);
             }
         } catch (error) {
-            console.error('Error:', error.response ? error.response.data : error.message);
-            event.reply('login-result', 'Error verifying password');
+            console.error('Error:', error.message);
+            event.reply('launch-result', 'Error launching Minecraft');
             isGameRunning = false;
             mainWindow.webContents.send('update-launch-button', isGameRunning);
         }
