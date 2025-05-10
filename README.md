@@ -6,9 +6,9 @@ Luthien Minecraft Launcher is a custom launcher for Minecraft that provides a se
 
 Choose your operating system to download the latest version of Luthien Minecraft Launcher:
 
-[![Download for Windows](https://img.shields.io/badge/Download-Windows-blue?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/candied-apple/Luthien-Minecraft-Launcher/releases/download/v1.0.5/luthien-mc-Setup-1.0.5.exe)
-[![Download for Linux](https://img.shields.io/badge/Download-Linux-green?style=for-the-badge&logo=linux&logoColor=white)](https://github.com/candied-apple/Luthien-Minecraft-Launcher/releases/download/v1.0.5/luthien-mc-1.0.5.AppImage)
-[![Download for macOS](https://img.shields.io/badge/Download-macOS-orange?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/candied-apple/Luthien-Minecraft-Launcher/releases/download/v1.0.5/luthien-mc-1.0.5-arm64.dmg)
+[![Download for Windows](https://img.shields.io/badge/Download-Windows-blue?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/candied-apple/Luthien-Minecraft-Launcher/releases/download/v1.0.7/luthien-mc-Setup-1.0.5.exe)
+[![Download for Linux](https://img.shields.io/badge/Download-Linux-green?style=for-the-badge&logo=linux&logoColor=white)](https://github.com/candied-apple/Luthien-Minecraft-Launcher/releases/download/v1.0.7/luthien-mc-1.0.5.AppImage)
+[![Download for macOS](https://img.shields.io/badge/Download-macOS-orange?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/candied-apple/Luthien-Minecraft-Launcher/releases/download/v1.0.7/luthien-mc-1.0.5-arm64.dmg)
 
 ## Installation Instructions
 

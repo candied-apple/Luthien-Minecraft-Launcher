@@ -115,11 +115,11 @@ if (!gotTheLock) {
             const updateResult = await updateFiles(event);
 
             if (updateResult) {
-            const customApiUrl = 'https://mc.shukketsu.app/api/yggdrasil/authserver';
+            const customApiUrl = 'https://mc.candiedapple.me/api/yggdrasil/authserver';
             Authenticator.changeApiUrl(customApiUrl);
             const launcher = new Client();
             const launchConfig = await fabric.getMCLCLaunchConfig({
-                gameVersion: '1.21.1',
+                gameVersion: '1.20.1',
                 rootPath: path.join(minecraftPath),
             });
 
@@ -131,7 +131,7 @@ if (!gotTheLock) {
                 detached: false,
                 },
                 customArgs: [
-                `-javaagent:${authlibInjectorPath}=https://mc.shukketsu.app/api/yggdrasil`,
+                `-javaagent:${authlibInjectorPath}=https://mc.candiedapple.me/api/yggdrasil`,
                 "-Duser.language=en",
                 "-Duser.country=US"
                 ]
@@ -170,8 +170,8 @@ if (!gotTheLock) {
     // Update the updateFiles function to accept event
     async function updateFiles(event) {
         return new Promise((resolve, reject) => {
-            const filesUrl = 'https://files.shukketsu.app/files.json';
-            const whitelistUrl = 'https://files.shukketsu.app/whitelisted_files.json';
+            const filesUrl = 'https://vds.candiedapple.me/files.json';
+            const whitelistUrl = 'https://vds.candiedapple.me/whitelisted_files.json';
 
             let filesToKeep = new Set();
             let directoriesToKeep = new Set();
@@ -212,7 +212,7 @@ if (!gotTheLock) {
                                     files.forEach(file => {
                                         const filename = file.filename;
                                         const expectedHash = file.hash;
-                                        const fileUrl = `https://files.shukketsu.app/files/${filename}`;
+                                        const fileUrl = `https://vds.candiedapple.me/files/${filename}`;
                                         const fullPath = path.join(minecraftPath, filename);
 
                                         let fileExists = fs.existsSync(fullPath);
