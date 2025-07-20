@@ -1,7 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const { Client, Authenticator } = require('minecraft-launcher-core');
-const { fabric } = require('tomate-loaders');
 const fs = require('fs');
 const https = require('https');
 const crypto = require('crypto');
@@ -107,57 +106,58 @@ if (!gotTheLock) {
             event.reply('launch-result', 'Game is already running');
             return;
         }
-    
+
         isGameRunning = true;
         mainWindow.webContents.send('update-launch-button', isGameRunning);
-    
+
         try {
             const updateResult = await updateFiles(event);
 
             if (updateResult) {
-            const customApiUrl = 'https://nested.candiedapple.me/api/yggdrasil/authserver';
-            Authenticator.changeApiUrl(customApiUrl);
-            const launcher = new Client();
-            const launchConfig = await fabric.getMCLCLaunchConfig({
-                gameVersion: '1.21.8',
-                rootPath: path.join(minecraftPath),
-            });
+                const customApiUrl = 'https://nested.candiedapple.me/api/yggdrasil/authserver';
+                Authenticator.changeApiUrl(customApiUrl);
+                const launcher = new Client();
 
-            const opts = {
-                authorization: Authenticator.getAuth(username, password),
-                ...launchConfig,
-                memory: memory,
-                overrides: {
-                detached: false,
-                },
-                customArgs: [
-                `-javaagent:${authlibInjectorPath}=https://nested.candiedapple.me/api/yggdrasil`,
-                "-Duser.language=en",
-                "-Duser.country=US"
-                ]
-            };
+                const opts = {
+                    authorization: Authenticator.getAuth(username, password),
+                    root: minecraftPath,
+                    version: {
+                        number: '1.21.8',
+                        type: 'release',
+                        custom: "fabric-loader-0.16.14-1.21.8"
+                    },
+                    memory: memory,
+                    overrides: {
+                        detached: false,
+                    },
+                    customArgs: [
+                        `-javaagent:${authlibInjectorPath}=https://nested.candiedapple.me/api/yggdrasil`,
+                        "-Duser.language=en",
+                        "-Duser.country=US"
+                    ]
+                };
 
-            launcher.launch(opts);
+                launcher.launch(opts);
 
-            launcher.on('debug', (e) => {
-                console.log(e);
-                mainWindow.webContents.send('log', e);
-            });
-            launcher.on('data', (e) => {
-                console.log(e);
-                mainWindow.webContents.send('log', e);
-            });
-            launcher.on('progress', (e) => {
-                mainWindow.webContents.send('progress', e);
-            });
+                launcher.on('debug', (e) => {
+                    console.log(e);
+                    mainWindow.webContents.send('log', e);
+                });
+                launcher.on('data', (e) => {
+                    console.log(e);
+                    mainWindow.webContents.send('log', e);
+                });
+                launcher.on('progress', (e) => {
+                    mainWindow.webContents.send('progress', e);
+                });
 
-            launcher.on('close', () => {
+                launcher.on('close', () => {
+                    isGameRunning = false;
+                    mainWindow.webContents.send('update-launch-button', isGameRunning);
+                });
+            } else {
                 isGameRunning = false;
                 mainWindow.webContents.send('update-launch-button', isGameRunning);
-            });
-            } else {
-            isGameRunning = false;
-            mainWindow.webContents.send('update-launch-button', isGameRunning);
             }
         } catch (error) {
             console.error('Error:', error.message);
