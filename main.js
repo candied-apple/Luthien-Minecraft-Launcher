@@ -119,7 +119,7 @@ if (!gotTheLock) {
             Authenticator.changeApiUrl(customApiUrl);
             const launcher = new Client();
             const launchConfig = await fabric.getMCLCLaunchConfig({
-                gameVersion: '1.20.1',
+                gameVersion: '1.21.8',
                 rootPath: path.join(minecraftPath),
             });
 
