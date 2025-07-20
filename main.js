@@ -115,7 +115,7 @@ if (!gotTheLock) {
             const updateResult = await updateFiles(event);
 
             if (updateResult) {
-            const customApiUrl = 'https://mc.candiedapple.me/api/yggdrasil/authserver';
+            const customApiUrl = 'https://nested.candiedapple.me/api/yggdrasil/authserver';
             Authenticator.changeApiUrl(customApiUrl);
             const launcher = new Client();
             const launchConfig = await fabric.getMCLCLaunchConfig({
@@ -131,7 +131,7 @@ if (!gotTheLock) {
                 detached: false,
                 },
                 customArgs: [
-                `-javaagent:${authlibInjectorPath}=https://mc.candiedapple.me/api/yggdrasil`,
+                `-javaagent:${authlibInjectorPath}=https://nested.candiedapple.me/api/yggdrasil`,
                 "-Duser.language=en",
                 "-Duser.country=US"
                 ]
